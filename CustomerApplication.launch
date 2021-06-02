@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+        <listEntry value="/lob-proj-api-customer/src/main/java/com/org/lob/CustomerApplication.java"/>
+    </listAttribute>
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+        <listEntry value="1"/>
+    </listAttribute>
+    <mapAttribute key="org.eclipse.debug.core.environmentVariables">
+        <mapEntry key="DB_NAME" value="mysqldb"/>
+        <mapEntry key="DB_PASS" value="testuser"/>
+        <mapEntry key="DB_PORT" value="3306"/>
+        <mapEntry key="DB_SERVER" value="localhost"/>
+        <mapEntry key="DB_USER" value="testuser"/>
+        <mapEntry key="RMQ_HOST" value="localhost"/>
+        <mapEntry key="RMQ_PASS" value="admin"/>
+        <mapEntry key="RMQ_PORT" value="5672"/>
+        <mapEntry key="RMQ_USER" value="admin"/>
+        <mapEntry key="SMB_DOMAIN" value="ms"/>
+        <mapEntry key="SMB_NAME" value="share"/>
+        <mapEntry key="SMB_PASSWORD" value="password"/>
+        <mapEntry key="SMB_SERVER" value="localhost"/>
+        <mapEntry key="SMB_USER" value="user"/>
+    </mapAttribute>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_EXCLUDE_TEST_CODE" value="true"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_CLASSPATH_ONLY_JAR" value="false"/>
+    <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.org.lob.CustomerApplication"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="lob-proj-job-trigger-batch-process"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="lob-proj-api-customer"/>
+    <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
+</launchConfiguration>
