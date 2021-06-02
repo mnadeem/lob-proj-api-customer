@@ -17,26 +17,26 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class Auditable {
 
     @CreatedBy
-    @Column(columnDefinition = "bigint default 1", updatable = false)
-    protected Long createdBy;
+    @Column(columnDefinition = "varchar(25)", updatable = false)
+    protected String createdBy;
 
     @CreatedDate
     @Column(columnDefinition = "timestamp default '2020-04-10 20:47:05.967394'", updatable = false)
     protected LocalDateTime createdDate;
 
     @LastModifiedBy
-    @Column(columnDefinition = "bigint default 1")
-    protected Long lastModifiedBy;
+    @Column(columnDefinition = "varchar(25)")
+    protected String lastModifiedBy;
 
     @LastModifiedDate
     @Column(columnDefinition = "timestamp default '2020-04-10 20:47:05.967394'")
     protected LocalDateTime lastModifiedDate;
 
-    public Long getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(Long createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -48,11 +48,11 @@ public abstract class Auditable {
         this.createdDate = createdDate;
     }
 
-    public Long getLastModifiedBy() {
+    public String getLastModifiedBy() {
         return lastModifiedBy;
     }
 
-    public void setLastModifiedBy(Long lastModifiedBy) {
+    public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 
