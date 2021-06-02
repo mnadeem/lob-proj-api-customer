@@ -86,4 +86,10 @@ public class Address extends Auditable implements Serializable {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
+
+	@Override
+	public String toString() {
+		return "Address [id=" + id + ", streetAddress=" + streetAddress + ", city=" + city + ", stateCode=" + stateCode
+				+ ", country=" + country + ", zipCode=" + zipCode + ", customer=" + customer + "]";
+	}
 }

@@ -82,4 +82,10 @@ public class Customer extends Auditable implements Serializable {
 		}
 		this.addresses.addAll(addresses);
 	}
+
+	@Override
+	public String toString() {
+		return "Customer [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", emailAddress="
+				+ emailAddress + ", addresses=" + addresses + "]";
+	}
 }
