@@ -16,11 +16,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity(name = "PRJ_CUSTOMER")
+@Audited
 @EntityListeners(AuditingEntityListener.class)
 public class Customer extends Auditable implements Serializable {
 
@@ -44,6 +47,7 @@ public class Customer extends Auditable implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, targetEntity = Address.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "CUSTOMER_ID")
     @JsonManagedReference
+    @NotAudited
     private List<Address> addresses;
 
 	public Long getId() {
