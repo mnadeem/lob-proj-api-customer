@@ -2,6 +2,8 @@ package com.org.lob.project.api;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -58,7 +60,7 @@ public class CustomerApi {
 	}
 
 	@PostMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createCustomer(@RequestBody Customer customer) {
+	public ResponseEntity<?> createCustomer(@Valid @RequestBody Customer customer) {
 		try {
 			Customer createdCustomer = customerService.create(customer);
 			return ResponseEntity.created(new URI("/customer/" + createdCustomer.getId())).body(customer);
