@@ -43,7 +43,7 @@ public class CustomerApi {
 	}
 
 	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getAllCustomers(@RequestParam("pageNum") String pageNumber,
+	public ResponseEntity<?> getAllCustomers(@RequestParam("pageNumber") String pageNumber,
 			@RequestParam("pageSize") String pageSize) {
 		try {
 			Integer pageNumberLong = Integer.valueOf(pageNumber);

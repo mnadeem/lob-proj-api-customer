@@ -26,13 +26,13 @@ public class CustomerService {
 	}
 
 	public Optional<Customer> getCustomerById(Long customerId) {
-		LOGGER.info("Fetching customer by id: {}", customerId);
+		LOGGER.debug("Fetching customer by id: {}", customerId);
 		return customerRepository.findById(customerId);
 	}
 
 	public Customer create(Customer customer) {
 		try {
-			LOGGER.info("Creating a new customer with emailAddress: {}", customer.getEmailAddress());
+			LOGGER.debug("Creating a new customer with emailAddress: {}", customer.getEmailAddress());
 			return customerRepository.save(customer);
 		} catch (DataIntegrityViolationException e) {
 			LOGGER.error("Customer already exists with emailAddress: {}", customer.getEmailAddress());
@@ -41,7 +41,7 @@ public class CustomerService {
 	}
 
 	public Customer update(Customer customer) {
-		LOGGER.info("Updating a customer with id: {}", customer.getId());
+		LOGGER.debug("Updating a customer with id: {}", customer.getId());
 		Optional<Customer> optionalCustomer = customerRepository.findById(customer.getId());
 		if (optionalCustomer.isEmpty()) {
 			LOGGER.error("Unable to update customer by id {}", customer.getId());
