@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -32,8 +33,11 @@ public class Customer extends Auditable implements Serializable {
 
 	@Column(name = "FIRST_NAME")
     private String firstName;
+
 	@Column(name = "LAST_NAME")
     private String lastName;
+
+	@NotBlank(message = "Email is mandatory")
 	@Column(name = "EMAIL_ADDRESS")
     private String emailAddress;
 
