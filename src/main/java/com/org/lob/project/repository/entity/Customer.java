@@ -16,7 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.lang.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -32,11 +31,11 @@ public class Customer extends Auditable implements Serializable {
     private Long id;
 
 	@Column(name = "FIRST_NAME")
-    private @NonNull String firstName;
+    private String firstName;
 	@Column(name = "LAST_NAME")
-    private @NonNull String lastName;
+    private String lastName;
 	@Column(name = "EMAIL_ADDRESS")
-    private @NonNull String emailAddress;
+    private String emailAddress;
 
     @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, targetEntity = Address.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "CUSTOMER_ID")

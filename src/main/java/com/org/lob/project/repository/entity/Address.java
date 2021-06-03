@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import org.springframework.lang.NonNull;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity(name = "PRJ_ADDRESS")
@@ -26,13 +24,13 @@ public class Address extends Auditable implements Serializable {
 	@Column(name = "STREET_ADDRESS")
     private String streetAddress;
 	@Column(name = "CITY")
-    private @NonNull String city;
+    private String city;
 	@Column(name = "STATE_CODE")
-    private @NonNull String stateCode;
+    private String stateCode;
 	@Column(name = "COUNTRY")
-    private @NonNull String country;
+    private  String country;
 	@Column(name = "ZIP_CODE")
-    private @NonNull String zipCode;
+    private String zipCode;
 
     @ManyToOne
     @JsonBackReference
