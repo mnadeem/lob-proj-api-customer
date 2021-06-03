@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
@@ -19,22 +20,26 @@ import org.springframework.lang.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-@Entity
+@Entity(name = "PRJ_CUSTOMER")
 @EntityListeners(AuditingEntityListener.class)
 public class Customer extends Auditable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+	@Column(name = "FIRST_NAME")
     private @NonNull String firstName;
+	@Column(name = "LAST_NAME")
     private @NonNull String lastName;
+	@Column(name = "EMAIL_ADDRESS")
     private @NonNull String emailAddress;
 
     @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, targetEntity = Address.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "CUSTOMER_ID")
     @JsonManagedReference
     private List<Address> addresses;
 

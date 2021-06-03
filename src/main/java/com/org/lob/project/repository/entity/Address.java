@@ -2,6 +2,7 @@ package com.org.lob.project.repository.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,19 +13,25 @@ import org.springframework.lang.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-@Entity
+@Entity(name = "PRJ_ADDRESS")
 public class Address extends Auditable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+	
+	@Column(name = "STREET_ADDRESS")
     private String streetAddress;
+	@Column(name = "CITY")
     private @NonNull String city;
+	@Column(name = "STATE_CODE")
     private @NonNull String stateCode;
+	@Column(name = "COUNTRY")
     private @NonNull String country;
+	@Column(name = "ZIP_CODE")
     private @NonNull String zipCode;
 
     @ManyToOne
