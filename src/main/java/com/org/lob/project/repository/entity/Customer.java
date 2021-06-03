@@ -57,19 +57,19 @@ public class Customer implements Serializable {
 
     @CreatedBy
     @Column(name = "CREATED_BY", columnDefinition = "varchar(25)", updatable = false)
-    protected String createdBy;
+    private String createdBy;
 
     @CreatedDate
     @Column(name = "CREATE_DATE_TIME", columnDefinition = "timestamp default '2021-06-10 20:47:05.967394'", updatable = false)
-    protected LocalDateTime createdDate;
+    private LocalDateTime createdDate;
 
     @LastModifiedBy
     @Column(name = "MODIFIED_BY", columnDefinition = "varchar(25)")
-    protected String lastModifiedBy;
+    private String lastModifiedBy;
 
     @LastModifiedDate
     @Column(name = "MODIFIED_DATE_TIME", columnDefinition = "timestamp default '2021-06-10 20:47:05.967394'")
-    protected LocalDateTime lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
 	public Long getId() {
 		return id;
