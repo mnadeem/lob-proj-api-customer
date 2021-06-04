@@ -35,7 +35,7 @@ public class CustomerApi {
 	}
 
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getCustomerDetail(@PathVariable(name = "id") @NotBlank @Length(min = 1) String customerId) {
+	public ResponseEntity<?> getCustomerDetail(@PathVariable(name = "id") @NotBlank(message = "{id.notempty}") @Length(min = 1) String customerId) {
 		try {
 			Long customerIdLong = Long.valueOf(customerId);
 			Customer customer = customerService.getCustomerById(customerIdLong)
@@ -47,7 +47,7 @@ public class CustomerApi {
 	}
 
 	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getAllCustomers(@RequestParam("pageNumber") @NotBlank @Length(min = 1) String pageNumber,
+	public ResponseEntity<?> getAllCustomers(@RequestParam("pageNumber") @NotBlank(message = "{pageNumber.notempty}") @Length(min = 1) String pageNumber,
 			@RequestParam("pageSize") @NotBlank @Length(min = 1) String pageSize) {
 		try {
 			Integer pageNumberLong = Integer.valueOf(pageNumber);
@@ -72,7 +72,7 @@ public class CustomerApi {
 	}
 
 	@PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateCustomer(@PathVariable(name = "id") @NotBlank @Length(min = 1) String customerId,
+	public ResponseEntity<?> updateCustomer(@PathVariable(name = "id") @NotBlank(message = "{id.notempty}") @Length(min = 1) String customerId,
 			@RequestBody Customer customer) {
 		try {
 			customer.setId(Long.valueOf(customerId));
