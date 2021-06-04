@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.UrlResource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
+import com.org.lob.project.batch.CustomerProcessor;
 import com.org.lob.project.batch.model.CustomerData;
 import com.org.lob.project.repository.entity.Customer;
 import com.org.lob.project.service.CustomerService;
@@ -71,12 +72,12 @@ public class BatchConfig {
 	}
 
 	@Bean
-	Step step1(StaxEventItemReader<CustomerData> reader, ItemWriterAdapter<Customer> writer, StepExecutionListener stepExecutionListener) {
+	Step step1(StaxEventItemReader<CustomerData> reader, CustomerProcessor processor, ItemWriterAdapter<Customer> writer, StepExecutionListener stepExecutionListener) {
 		return stepBuilderFactory.get("batch-process.step1")
 				.listener(stepExecutionListener)
 				.<CustomerData, Customer>chunk(10)
 					.reader(reader)
-					//.processor(new Processor())
+					.processor(processor)
 					.faultTolerant()
 					//.skipPolicy(skip())
 					.writer(writer)
@@ -96,6 +97,11 @@ public class BatchConfig {
 		marshaller.setClassesToBeBound(CustomerData.class);
 		reader.setUnmarshaller(marshaller);
 		return reader;
+	}
+	
+	@Bean
+	CustomerProcessor customerProcessor() {
+		return new CustomerProcessor();
 	}
 
 	@Bean
