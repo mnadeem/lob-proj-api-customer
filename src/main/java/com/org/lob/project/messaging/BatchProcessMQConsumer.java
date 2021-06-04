@@ -50,16 +50,20 @@ public class BatchProcessMQConsumer {
 	}
 
 	private BatchProcessEvent create(String message) throws JsonProcessingException {
-		return mapper.readValue(message, BatchProcessEvent.class);
+		return this.mapper.readValue(message, BatchProcessEvent.class);
 	}
 
 	private JobExecution launchJob(BatchProcessEvent batchProcessEvent) throws JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
-		JobParameters params = new JobParametersBuilder()
+		JobParameters params = jobParams(batchProcessEvent);
+		return this.jobLauncher.run(this.job, params);
+	}
+
+	private JobParameters jobParams(BatchProcessEvent batchProcessEvent) {
+		return new JobParametersBuilder()
 				.addString("JobID", String.valueOf(System.currentTimeMillis()))
 				.addString("fileName", batchProcessEvent.getPath())
 				.addDate("launchDate", new Date())
 				.toJobParameters();
-		return this.jobLauncher.run(this.job, params);
 	}
 }
