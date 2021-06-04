@@ -3,7 +3,9 @@ package com.org.lob.project.api;
 import java.net.URI;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -33,7 +35,7 @@ public class CustomerApi {
 	}
 
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getCustomerDetail(@PathVariable(name = "id") String customerId) {
+	public ResponseEntity<?> getCustomerDetail(@PathVariable(name = "id") @NotBlank @Length(min = 1) String customerId) {
 		try {
 			Long customerIdLong = Long.valueOf(customerId);
 			Customer customer = customerService.getCustomerById(customerIdLong)
@@ -45,8 +47,8 @@ public class CustomerApi {
 	}
 
 	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getAllCustomers(@RequestParam("pageNumber") String pageNumber,
-			@RequestParam("pageSize") String pageSize) {
+	public ResponseEntity<?> getAllCustomers(@RequestParam("pageNumber") @NotBlank @Length(min = 1) String pageNumber,
+			@RequestParam("pageSize") @NotBlank @Length(min = 1) String pageSize) {
 		try {
 			Integer pageNumberLong = Integer.valueOf(pageNumber);
 			Integer pageSizeLong = Integer.valueOf(pageSize);
@@ -70,7 +72,7 @@ public class CustomerApi {
 	}
 
 	@PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateCustomer(@PathVariable(name = "id") String customerId,
+	public ResponseEntity<?> updateCustomer(@PathVariable(name = "id") @NotBlank @Length(min = 1) String customerId,
 			@RequestBody Customer customer) {
 		try {
 			customer.setId(Long.valueOf(customerId));
