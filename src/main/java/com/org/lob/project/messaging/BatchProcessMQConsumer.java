@@ -62,7 +62,7 @@ public class BatchProcessMQConsumer {
 	private JobParameters jobParams(BatchProcessEvent batchProcessEvent) {
 		return new JobParametersBuilder()
 				.addString("JobID", String.valueOf(System.currentTimeMillis()))
-				.addString("fileName", batchProcessEvent.getPath())
+				.addString("fileName", batchProcessEvent.getFilePath())
 				.addDate("launchDate", new Date())
 				.toJobParameters();
 	}

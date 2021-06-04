@@ -1,5 +1,7 @@
 package com.org.lob.project.messaging.model;
 
+import org.springframework.util.ResourceUtils;
+
 public class BatchProcessEvent {
 
 	private Long id;
@@ -15,6 +17,10 @@ public class BatchProcessEvent {
 
 	public String getPath() {
 		return path;
+	}
+
+	public String getFilePath() {
+		return ResourceUtils.FILE_URL_PREFIX + getPath();
 	}
 
 	public void setPath(String path) {

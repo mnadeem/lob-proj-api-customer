@@ -72,8 +72,8 @@ public class BatchConfig {
 	}
 
 	@Bean
-	Step step1(StaxEventItemReader<CustomerData> reader, CustomerProcessor processor, ItemWriterAdapter<Customer> writer, StepExecutionListener stepExecutionListener) {
-		return stepBuilderFactory.get("batch-process.step1")
+	Step step1(@Value("${app.batch_process.step1.name}") String stepName, StaxEventItemReader<CustomerData> reader, CustomerProcessor processor, ItemWriterAdapter<Customer> writer, StepExecutionListener stepExecutionListener) {
+		return stepBuilderFactory.get(stepName)
 				.listener(stepExecutionListener)
 				.<CustomerData, Customer>chunk(10)
 					.reader(reader)
@@ -86,17 +86,21 @@ public class BatchConfig {
 
 	@Bean
 	@StepScope
-	StaxEventItemReader<CustomerData> reader(@Value("#{stepExecutionContext['fileName']}") String file) throws MalformedURLException {
+	StaxEventItemReader<CustomerData> customerDataReader(@Value("#{jobParameters['fileName']}") String file) throws MalformedURLException {
 
 		LOGGER.info("StaxEventItemReader:fileName: {}", file);
 
 		StaxEventItemReader<CustomerData> reader = new StaxEventItemReader<>();
 		reader.setResource(new UrlResource(file));
-		reader.setFragmentRootElementNames(new String[] { "customer"});
+		reader.setFragmentRootElementNames(new String[] { "customer" });
+		reader.setUnmarshaller(newCustomerDataMarshaller());
+		return reader;
+	}
+
+	private Jaxb2Marshaller newCustomerDataMarshaller() {
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 		marshaller.setClassesToBeBound(CustomerData.class);
-		reader.setUnmarshaller(marshaller);
-		return reader;
+		return marshaller;
 	}
 
 	@Bean

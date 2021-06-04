@@ -1,11 +1,8 @@
 package com.org.lob.project.batch.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -68,32 +65,5 @@ public class CustomerData {
 			this.addresses.clear();
 		}
 		this.addresses.addAll(addresses);
-	}
-
-	public static void main(String[] args) throws Exception {
-		
-		CustomerData customerData = new CustomerData();
-		customerData.setEmailAddress("email");
-		customerData.setFirstName("fiors");
-		customerData.setLastName("last");
-		
-		AddressData ad = new AddressData();
-		ad.setCity("city");
-		ad.setCountry("copuntyhr");
-		
-		AddressData ad1 = new AddressData();
-		ad1.setCity("city");
-		ad1.setCountry("copuntyhr");
-		
-		customerData.setAddresses(Arrays.asList(ad, ad1));
-		
-		// create JAXB context and instantiate marshaller
-        JAXBContext context = JAXBContext.newInstance(CustomerData.class);
-        Marshaller m = context.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-        // Write to System.out
-        m.marshal(customerData, System.out);
-
 	}
 }
