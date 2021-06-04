@@ -38,12 +38,16 @@ public class BatchConfig {
 
 	@Bean
 	Job processJob(Step step1, @Value("${app.batch_process.job.name}") String jobName) {
-		return jobBuilderFactory.get(jobName).incrementer(new RunIdIncrementer()).flow(step1).end().build();
+		return jobBuilderFactory.get(jobName)
+				.incrementer(new RunIdIncrementer())
+				.flow(step1)
+				.end()
+				.build();
 	}
 
 	@Bean
 	Step step1(StaxEventItemReader<Customer> reader, ItemWriterAdapter<Customer> writer) {
-		return stepBuilderFactory.get("step1")
+		return stepBuilderFactory.get("batch-process.step1")
 				.<Customer, Customer>chunk(10)
 					.reader(reader)
 					//.processor(new Processor())
@@ -57,6 +61,7 @@ public class BatchConfig {
 	@StepScope
 	StaxEventItemReader<Customer> reader(@Value("#{stepExecutionContext['fileName']}") String file)
 			throws MalformedURLException {
+
 		LOGGER.info("StaxEventItemReader ----fileName---> {}", file);
 
 		StaxEventItemReader<Customer> reader = new StaxEventItemReader<>();
