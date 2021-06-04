@@ -39,7 +39,7 @@ public class BatchConfig {
 	private JobBuilderFactory jobBuilderFactory;	
 	private StepBuilderFactory stepBuilderFactory;	
 
-	public BatchConfig(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory) {
+	BatchConfig(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory) {
 		this.jobBuilderFactory = jobBuilderFactory;
 		this.stepBuilderFactory = stepBuilderFactory;
 	}
@@ -55,7 +55,7 @@ public class BatchConfig {
 	}
 
 	@Bean
-	public BatchConfigurer batchConfigurer(DataSource dataSource) {
+	BatchConfigurer batchConfigurer(DataSource dataSource) {
 		return new DefaultBatchConfigurer(dataSource);
 	}
 
@@ -84,10 +84,9 @@ public class BatchConfig {
 
 	@Bean
 	@StepScope
-	StaxEventItemReader<Customer> reader(@Value("#{stepExecutionContext['fileName']}") String file)
-			throws MalformedURLException {
+	StaxEventItemReader<Customer> reader(@Value("#{stepExecutionContext['fileName']}") String file) throws MalformedURLException {
 
-		LOGGER.info("StaxEventItemReader ----fileName---> {}", file);
+		LOGGER.info("StaxEventItemReader:fileName: {}", file);
 
 		StaxEventItemReader<Customer> reader = new StaxEventItemReader<>();
 		reader.setResource(new UrlResource(file));
