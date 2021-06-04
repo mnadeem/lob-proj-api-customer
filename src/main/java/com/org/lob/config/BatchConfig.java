@@ -7,7 +7,9 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -25,6 +27,8 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import com.org.lob.project.repository.entity.Customer;
 import com.org.lob.project.service.CustomerService;
+import com.org.lob.support.batch.LoggingJobExecutionListener;
+import com.org.lob.support.batch.LoggingStepExecutionListener;
 
 @Configuration
 @EnableBatchProcessing
@@ -41,22 +45,34 @@ public class BatchConfig {
 	}
 
 	@Bean
+	JobExecutionListener loggingJobExecutionListener() {
+		return new LoggingJobExecutionListener();
+	}
+
+	@Bean
+	StepExecutionListener loggingStepExecutionListener() {
+		return new LoggingStepExecutionListener();
+	}
+
+	@Bean
 	public BatchConfigurer batchConfigurer(DataSource dataSource) {
 		return new DefaultBatchConfigurer(dataSource);
 	}
 
 	@Bean
-	Job processJob(Step step1, @Value("${app.batch_process.job.name}") String jobName) {
+	Job processJob(Step step1, @Value("${app.batch_process.job.name}") String jobName, JobExecutionListener executionListener) {
 		return jobBuilderFactory.get(jobName)
 				.incrementer(new RunIdIncrementer())
+				.listener(executionListener)
 				.flow(step1)
 				.end()
 				.build();
 	}
 
 	@Bean
-	Step step1(StaxEventItemReader<Customer> reader, ItemWriterAdapter<Customer> writer) {
+	Step step1(StaxEventItemReader<Customer> reader, ItemWriterAdapter<Customer> writer, StepExecutionListener stepExecutionListener) {
 		return stepBuilderFactory.get("batch-process.step1")
+				.listener(stepExecutionListener)
 				.<Customer, Customer>chunk(10)
 					.reader(reader)
 					//.processor(new Processor())

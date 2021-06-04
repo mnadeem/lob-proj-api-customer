@@ -7,7 +7,7 @@ import org.springframework.data.envers.repository.config.EnableEnversRepositorie
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.org.lob.support.SpringSecurityAuditorAware;
+import com.org.lob.support.audit.SpringSecurityAuditorAware;
 
 @Configuration
 @EnableJpaAuditing
