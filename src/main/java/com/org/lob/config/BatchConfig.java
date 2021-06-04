@@ -98,7 +98,7 @@ public class BatchConfig {
 		reader.setUnmarshaller(marshaller);
 		return reader;
 	}
-	
+
 	@Bean
 	CustomerProcessor customerProcessor() {
 		return new CustomerProcessor();

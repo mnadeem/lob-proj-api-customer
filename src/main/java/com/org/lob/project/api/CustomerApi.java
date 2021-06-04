@@ -47,7 +47,7 @@ public class CustomerApi {
 	}
 
 	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getAllCustomers(@RequestParam("pageNumber") @NotBlank(message = "{pageNumber.notempty}") @Length(min = 1) String pageNumber,
+	public ResponseEntity<?> getAllCustomers(@RequestParam(name= "pageNumber", required = true) @NotBlank(message = "{pageNumber.notempty}") @Length(min = 1) String pageNumber,
 			@RequestParam("pageSize") @NotBlank @Length(min = 1) String pageSize) {
 		try {
 			Integer pageNumberLong = Integer.valueOf(pageNumber);
