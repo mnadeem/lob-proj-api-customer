@@ -16,7 +16,7 @@ public class LoggingJobExecutionListener extends JobExecutionListenerSupport {
 
 	@Override
 	public void afterJob(JobExecution jobExecution) {
-		LOGGER.info("Finished Job {} ", jobExecution.getJobInstance().getJobName(), jobExecution.getStatus());
+		LOGGER.info("Finished Job {} With Status {}", jobExecution.getJobInstance().getJobName(), jobExecution.getStatus());
 		super.afterJob(jobExecution);
 	}
 }
