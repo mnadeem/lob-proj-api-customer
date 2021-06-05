@@ -28,7 +28,7 @@ import com.org.lob.project.repository.entity.Customer;
 import com.org.lob.project.service.CustomerService;
 
 @RestController
-@RequestMapping("/api/v1/customer")
+@RequestMapping(REQUEST_MAPPING_CUSTOMER)
 public class CustomerApi {
 
 	private CustomerService customerService;
@@ -82,7 +82,7 @@ public class CustomerApi {
 	public ResponseEntity<?> createCustomer(@Valid @RequestBody Customer customer) {
 		try {
 			Customer createdCustomer = customerService.create(customer);
-			return ResponseEntity.created(new URI("/customer/" + createdCustomer.getId())).body(customer);
+			return ResponseEntity.created(new URI(REQUEST_MAPPING_CUSTOMER + "/" + createdCustomer.getId())).body(customer);
 		} catch (Exception ex) {
 			return handleException(ex);
 		}
