@@ -22,11 +22,13 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.adapter.ItemWriterAdapter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.UrlResource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import com.org.lob.project.batch.CustomerProcessor;
 import com.org.lob.project.batch.model.CustomerData;
@@ -60,8 +62,13 @@ public class BatchConfig {
 	}
 
 	@Bean
-	BatchConfigurer batchConfigurer(DataSource dataSource) {
-		return new DefaultBatchConfigurer(dataSource);
+	BatchConfigurer batchConfigurer(DataSource dataSource, @Qualifier("projectTransactionManager") PlatformTransactionManager transactionManager) {
+		return new DefaultBatchConfigurer(dataSource) {
+			@Override
+			public PlatformTransactionManager getTransactionManager() {
+				return transactionManager;
+			}
+		};
 	}
 
 	@Bean
@@ -119,4 +126,5 @@ public class BatchConfig {
 		writer.setTargetMethod(BATCH_JOB_TARGET_METHOD);
 		return writer;
 	}
+
 }
