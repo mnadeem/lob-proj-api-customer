@@ -2,6 +2,8 @@ package com.org.lob.project.api;
 
 import java.net.URI;
 
+import static com.org.lob.support.Constants.*;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -36,7 +38,7 @@ public class CustomerApi {
 	}
 
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getCustomerDetail(@PathVariable(name = "id") @NotBlank(message = "{id.notempty}") @Length(min = 1) @Positive String customerId) {
+	public ResponseEntity<?> getCustomerDetail(@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) @Positive String customerId) {
 		try {
 			Customer customer = getCustomerById(customerId);
 			return ResponseEntity.ok(customer);
@@ -52,8 +54,8 @@ public class CustomerApi {
 	}
 
 	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getAllCustomers(@RequestParam(name= "pageNumber", required = true) @NotBlank(message = "{pageNumber.notempty}") @Length(min = 1) String pageNumber,
-			@RequestParam("pageSize") @NotBlank @Length(min = 1) String pageSize) {
+	public ResponseEntity<?> getAllCustomers(@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER, required = true) @NotBlank(message = "{page_number.not_empty}") @Length(min = 1) String pageNumber,
+			@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER) @NotBlank @Length(min = 1) String pageSize) {
 		try {
 			Page<Customer> page = getCustomersPage(pageNumber, pageSize);
 			return ResponseEntity.ok(page.getContent());
@@ -87,7 +89,7 @@ public class CustomerApi {
 	}
 
 	@PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateCustomer(@PathVariable(name = "id") @NotBlank(message = "{id.notempty}") @Length(min = 1) String customerId,
+	public ResponseEntity<?> updateCustomer(@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) String customerId,
 			@RequestBody Customer customer) {
 		try {
 			customer.setId(Long.valueOf(customerId));

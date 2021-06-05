@@ -10,6 +10,11 @@ public final class Constants {
 
 	public static final String SYSTEM_USER_DEFAULT = "SYSTEM";
 	
+	public static final String PATH_VARIABLE_ID = "id";
+	public static final String REQUEST_PARAM_PAGE_NUMBER = "pageNumber";
+	public static final String REQUEST_PARAM_PAGE_SIZE = "pageSize";
+	
+	
 	private Constants() {
 
 	}
