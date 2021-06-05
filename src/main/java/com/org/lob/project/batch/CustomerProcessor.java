@@ -28,15 +28,15 @@ public class CustomerProcessor implements ItemProcessor<CustomerData, Customer> 
 		customer.setEmailAddress(item.getEmailAddress());
 		customer.setFirstName(item.getFirstName());
 		customer.setLastName(item.getLastName());
-		customer.setAddresses(buildAddress(item.getAddresses()));
+		customer.setAddresses(buildAddress(customer, item.getAddresses()));
 		return customer;
 	}
 
-	private List<Address> buildAddress(List<AddressData> addresses) {
-		return addresses.stream().map(ad -> buildAddrss(ad)).collect(Collectors.toList());
+	private List<Address> buildAddress(Customer customer, List<AddressData> addresses) {
+		return addresses.stream().map(ad -> buildAddrss(customer, ad)).collect(Collectors.toList());
 	}
 
-	private Address buildAddrss(AddressData ad) {
+	private Address buildAddrss(Customer customer, AddressData ad) {
 		Address address = new Address();
 		address.setCity(ad.getCity());
 		address.setStateCode(ad.getStateCode());
@@ -44,7 +44,7 @@ public class CustomerProcessor implements ItemProcessor<CustomerData, Customer> 
 		address.setId(ad.getId());
 		address.setStateCode(ad.getStateCode());
 		address.setStreetAddress(ad.getStreetAddress());
-		
+		address.setCustomer(customer);
 		return address;
 	}
 }
