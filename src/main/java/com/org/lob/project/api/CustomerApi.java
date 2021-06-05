@@ -4,6 +4,7 @@ import java.net.URI;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
@@ -35,15 +36,19 @@ public class CustomerApi {
 	}
 
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getCustomerDetail(@PathVariable(name = "id") @NotBlank(message = "{id.notempty}") @Length(min = 1) String customerId) {
+	public ResponseEntity<?> getCustomerDetail(@PathVariable(name = "id") @NotBlank(message = "{id.notempty}") @Length(min = 1) @Positive String customerId) {
 		try {
-			Long customerIdLong = Long.valueOf(customerId);
-			Customer customer = customerService.getCustomerById(customerIdLong)
-					.orElseThrow(() -> new RuntimeException("Unable to fetch customer record with id = " + customerId));
+			Customer customer = getCustomerById(customerId);
 			return ResponseEntity.ok(customer);
 		} catch (Exception ex) {
 			return handleException(ex);
 		}
+	}
+
+	private Customer getCustomerById(String customerId) {
+		Long customerIdLong = Long.valueOf(customerId);
+		return customerService.getCustomerById(customerIdLong)
+				.orElseThrow(() -> new RuntimeException("Unable to fetch customer record with id = " + customerId));
 	}
 
 	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
