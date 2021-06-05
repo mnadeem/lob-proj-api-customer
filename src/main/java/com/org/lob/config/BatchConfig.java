@@ -67,6 +67,7 @@ public class BatchConfig {
 	@Bean
 	Job processJob(Step step1, @Value("${app.batch_process.job.name}") String jobName, JobExecutionListener executionListener) {
 		return jobBuilderFactory.get(jobName)
+				//.validator(null)
 				.incrementer(new RunIdIncrementer())
 				.listener(executionListener)
 				.flow(step1)
