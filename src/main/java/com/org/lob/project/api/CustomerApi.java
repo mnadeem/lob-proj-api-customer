@@ -55,15 +55,25 @@ public class CustomerApi {
 	public ResponseEntity<?> getAllCustomers(@RequestParam(name= "pageNumber", required = true) @NotBlank(message = "{pageNumber.notempty}") @Length(min = 1) String pageNumber,
 			@RequestParam("pageSize") @NotBlank @Length(min = 1) String pageSize) {
 		try {
-			Integer pageNumberLong = Integer.valueOf(pageNumber);
-			Integer pageSizeLong = Integer.valueOf(pageSize);
-			// Create a new paginated search request.
-			PageRequest pageRequest = PageRequest.of(pageNumberLong, pageSizeLong);
-			Page<Customer> page = customerService.findAll(pageRequest);
+			Page<Customer> page = getCustomersPage(pageNumber, pageSize);
 			return ResponseEntity.ok(page.getContent());
 		} catch (Exception ex) {
 			return handleException(ex);
 		}
+	}
+
+	private Page<Customer> getCustomersPage(String pageNumber, String pageSize) {
+		PageRequest pageRequest = pageRequest(pageNumber, pageSize);
+		Page<Customer> page = customerService.findAll(pageRequest);
+		return page;
+	}
+
+	private PageRequest pageRequest(String pageNumber, String pageSize) {
+		Integer pageNumberLong = Integer.valueOf(pageNumber);
+		Integer pageSizeLong = Integer.valueOf(pageSize);
+		// Create a new paginated search request.
+		PageRequest pageRequest = PageRequest.of(pageNumberLong, pageSizeLong);
+		return pageRequest;
 	}
 
 	@PostMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
