@@ -43,7 +43,7 @@ public class CustomerApi {
 
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getCustomerDetail(
-			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) @Positive Long customerId) {
+			@PathVariable(name = PATH_VARIABLE_ID) @Length(min = 1) @Positive Long customerId) {
 		Optional<Customer> customer = getCustomerById(customerId);
 		if (customer.isEmpty()) {
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
@@ -53,8 +53,8 @@ public class CustomerApi {
 
 	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getAllCustomers(
-			@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER, required = true) @NotBlank(message = "{page_number.not_empty}") @Length(min = 1) Integer pageNumber,
-			@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER) @NotBlank @Length(min = 1) Integer pageSize) {
+			@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER, required = true) @NotBlank(message = "{page_number.not_empty}") @Positive Integer pageNumber,
+			@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER, required = true) @Positive Integer pageSize) {
 		try {
 			Page<Customer> page = getCustomersPage(pageNumber, pageSize);
 			return ResponseEntity.ok(page.getContent());
@@ -89,7 +89,7 @@ public class CustomerApi {
 
 	@PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateCustomer(
-			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) Long customerId,
+			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) @Positive Long customerId,
 			@RequestBody Customer customer) {
 		try {
 			Optional<Customer> customerOptional = getCustomerById(customerId);
@@ -106,7 +106,7 @@ public class CustomerApi {
 
 	@DeleteMapping(path = "/{id}")
 	public ResponseEntity<Void> deleteCustomer(
-			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) Long customerId) {
+			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) @Positive Long customerId) {
 		Optional<Customer> customer = getCustomerById(customerId);
 		if (customer.isEmpty()) {
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
