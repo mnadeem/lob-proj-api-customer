@@ -39,7 +39,7 @@ public class Customer extends Auditable implements Serializable {
 	@Column(name = "LAST_NAME")
     private String lastName;
 
-	@NotBlank(message = "{email.notempty}")
+	@NotBlank(message = "{email.not_empty}")
 	@Column(name = "EMAIL_ADDRESS")
     private String emailAddress;
 
