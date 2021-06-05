@@ -17,6 +17,7 @@ import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -34,6 +35,8 @@ import com.org.lob.project.batch.CustomerProcessor;
 import com.org.lob.project.batch.model.CustomerData;
 import com.org.lob.project.repository.entity.Customer;
 import com.org.lob.project.service.CustomerService;
+import com.org.lob.support.batch.CopyFileTasklet;
+import com.org.lob.support.batch.FileDeletingTasklet;
 import com.org.lob.support.batch.LoggingJobExecutionListener;
 import com.org.lob.support.batch.LoggingStepExecutionListener;
 
@@ -72,18 +75,31 @@ public class BatchConfig {
 	}
 
 	@Bean
-	Job processJob(Step step1, @Value("${app.batch_process.job.name}") String jobName, JobExecutionListener executionListener) {
+	Job processJob(@Qualifier("copyStep") Step step0, @Qualifier("readWriteStep") Step step1, @Qualifier("deleteStep") Step step2, @Value("${app.batch_process.job.name}") String jobName, JobExecutionListener executionListener) {
 		return jobBuilderFactory.get(jobName)
 				//.validator(null)
 				.incrementer(new RunIdIncrementer())
 				.listener(executionListener)
-				.flow(step1)
-				.end()
+				.start(step0)
+				.next(step1)
+				.next(step2)
 				.build();
 	}
 
-	@Bean
-	Step step1(@Value("${app.batch_process.step1.name}") String stepName, StaxEventItemReader<CustomerData> reader, CustomerProcessor processor, ItemWriterAdapter<Customer> writer, StepExecutionListener stepExecutionListener) {
+	@Bean(name = "copyStep")
+	@JobScope
+    public Step copyStep(@Value("${app.batch_process.copy.step}") String stepName, @Value("#{jobParameters['fileName']}") String file) throws MalformedURLException {
+        CopyFileTasklet task = new CopyFileTasklet();
+        task.setFileName(file);
+        task.setLocalFileBasePath("");
+        task.setLocalFilePathKey("fileName");
+        return stepBuilderFactory.get(stepName)
+                .tasklet(task)
+                .build();
+    }
+
+	@Bean(name = "readWriteStep")
+	Step readWriteStep(@Value("${app.batch_process.read_write.step}") String stepName, StaxEventItemReader<CustomerData> reader, CustomerProcessor processor, ItemWriterAdapter<Customer> writer, StepExecutionListener stepExecutionListener) {
 		return stepBuilderFactory.get(stepName)
 				.listener(stepExecutionListener)
 				.<CustomerData, Customer>chunk(10)
@@ -97,7 +113,7 @@ public class BatchConfig {
 
 	@Bean
 	@StepScope
-	StaxEventItemReader<CustomerData> customerDataReader(@Value("#{jobParameters['fileName']}") String file) throws MalformedURLException {
+	StaxEventItemReader<CustomerData> customerDataReader(@Value("#{jobExecutionContext['fileName']}") String file) throws MalformedURLException {
 
 		LOGGER.info("customerDataReader:fileName: {}", file);
 
@@ -127,4 +143,13 @@ public class BatchConfig {
 		return writer;
 	}
 
+	@Bean(name = "deleteStep")
+	@JobScope
+    public Step deleteStep(@Value("${app.batch_process.delete_file.step}") String stepName, @Value("#{jobExecutionContext['fileName']}") String file) throws MalformedURLException {
+        FileDeletingTasklet task = new FileDeletingTasklet();
+        task.setResource(new UrlResource(file));
+        return stepBuilderFactory.get(stepName)
+                .tasklet(task)
+                .build();
+    }
 }
