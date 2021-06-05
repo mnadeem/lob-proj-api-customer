@@ -62,7 +62,7 @@ public class BatchConfig {
 	}
 
 	@Bean
-	BatchConfigurer batchConfigurer(DataSource dataSource, @Qualifier("projectTransactionManager") PlatformTransactionManager transactionManager) {
+	BatchConfigurer batchConfigurer(@Qualifier("projectDataSource") DataSource dataSource, @Qualifier("projectTransactionManager") PlatformTransactionManager transactionManager) {
 		return new DefaultBatchConfigurer(dataSource) {
 			@Override
 			public PlatformTransactionManager getTransactionManager() {
