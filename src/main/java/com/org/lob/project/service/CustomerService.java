@@ -29,7 +29,7 @@ public class CustomerService {
 		LOGGER.debug("Fetching customer by id: {}", customerId);
 		return customerRepository.findById(customerId);
 	}
-	
+
 	public Customer create(Customer customer) {
 		try {
 			LOGGER.debug("Creating a new customer with emailAddress: {}", customer.getEmailAddress());

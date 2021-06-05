@@ -1,8 +1,10 @@
 package com.org.lob.project.api;
 
-import java.net.URI;
+import static com.org.lob.support.Constants.PATH_VARIABLE_ID;
+import static com.org.lob.support.Constants.REQUEST_MAPPING_CUSTOMER;
+import static com.org.lob.support.Constants.REQUEST_PARAM_PAGE_NUMBER;
 
-import static com.org.lob.support.Constants.*;
+import java.util.Optional;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.org.lob.project.api.model.ErrorMessage;
 import com.org.lob.project.repository.entity.Customer;
@@ -38,24 +42,19 @@ public class CustomerApi {
 	}
 
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getCustomerDetail(@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) @Positive String customerId) {
-		try {
-			Customer customer = getCustomerById(customerId);
-			return ResponseEntity.ok(customer);
-		} catch (Exception ex) {
-			return handleException(ex);
+	public ResponseEntity<?> getCustomerDetail(
+			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) @Positive Long customerId) {
+		Optional<Customer> customer = getCustomerById(customerId);
+		if (customer.isEmpty()) {
+			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 		}
-	}
-
-	private Customer getCustomerById(String customerId) {
-		Long customerIdLong = Long.valueOf(customerId);
-		return customerService.getCustomerById(customerIdLong)
-				.orElseThrow(() -> new RuntimeException("Unable to fetch customer record with id = " + customerId));
+		return ResponseEntity.ok(customer.get());
 	}
 
 	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getAllCustomers(@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER, required = true) @NotBlank(message = "{page_number.not_empty}") @Length(min = 1) String pageNumber,
-			@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER) @NotBlank @Length(min = 1) String pageSize) {
+	public ResponseEntity<?> getAllCustomers(
+			@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER, required = true) @NotBlank(message = "{page_number.not_empty}") @Length(min = 1) Integer pageNumber,
+			@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER) @NotBlank @Length(min = 1) Integer pageSize) {
 		try {
 			Page<Customer> page = getCustomersPage(pageNumber, pageSize);
 			return ResponseEntity.ok(page.getContent());
@@ -64,40 +63,60 @@ public class CustomerApi {
 		}
 	}
 
-	private Page<Customer> getCustomersPage(String pageNumber, String pageSize) {
-		PageRequest pageRequest = pageRequest(pageNumber, pageSize);
+	private Page<Customer> getCustomersPage(Integer pageNumber, Integer pageSize) {
+		PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
 		Page<Customer> page = customerService.findAll(pageRequest);
 		return page;
 	}
 
-	private PageRequest pageRequest(String pageNumber, String pageSize) {
-		Integer pageNumberLong = Integer.valueOf(pageNumber);
-		Integer pageSizeLong = Integer.valueOf(pageSize);
-		// Create a new paginated search request.
-		PageRequest pageRequest = PageRequest.of(pageNumberLong, pageSizeLong);
-		return pageRequest;
-	}
-
 	@PostMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createCustomer(@Valid @RequestBody Customer customer) {
+	public ResponseEntity<?> createCustomer(@Valid @RequestBody Customer customer, UriComponentsBuilder ucBuilder) {
 		try {
+
+			if (customer.getId() != null) {
+				return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+			}
+
 			Customer createdCustomer = customerService.create(customer);
-			return ResponseEntity.created(new URI(REQUEST_MAPPING_CUSTOMER + "/" + createdCustomer.getId())).body(customer);
+
+			return ResponseEntity
+					.created(ucBuilder.path(REQUEST_MAPPING_CUSTOMER).buildAndExpand(createdCustomer.getId()).toUri())
+					.body(createdCustomer);
 		} catch (Exception ex) {
 			return handleException(ex);
 		}
 	}
 
 	@PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateCustomer(@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) String customerId,
+	public ResponseEntity<?> updateCustomer(
+			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) Long customerId,
 			@RequestBody Customer customer) {
 		try {
-			customer.setId(Long.valueOf(customerId));
+			Optional<Customer> customerOptional = getCustomerById(customerId);
+			if (customerOptional.isEmpty()) {
+				return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+			}
+			customer.setId(customerId);
 			Customer updatedCustomer = customerService.update(customer);
 			return ResponseEntity.ok(updatedCustomer);
 		} catch (Exception ex) {
 			return handleException(ex);
 		}
+	}
+
+	@DeleteMapping(path = "/{id}")
+	public ResponseEntity<Void> deleteCustomer(
+			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) Long customerId) {
+		Optional<Customer> customer = getCustomerById(customerId);
+		if (customer.isEmpty()) {
+			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+		}
+		customerService.deleteCustomer(null);
+		return new ResponseEntity<Void>(HttpStatus.OK);
+	}
+
+	private Optional<Customer> getCustomerById(Long customerId) {
+		return customerService.getCustomerById(customerId);
 	}
 
 	private ResponseEntity<ErrorMessage> handleException(Exception ex) {
