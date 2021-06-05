@@ -66,4 +66,10 @@ public class CustomerData {
 		}
 		this.addresses.addAll(addresses);
 	}
+
+	@Override
+	public String toString() {
+		return "CustomerData [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", emailAddress="
+				+ emailAddress + "]";
+	}
 }

@@ -1,5 +1,8 @@
 package com.org.lob.config;
 
+import static com.org.lob.support.Constants.BATCH_JOB_ROOT_ELEMENT;
+import static com.org.lob.support.Constants.BATCH_JOB_TARGET_METHOD;
+
 import java.net.MalformedURLException;
 
 import javax.sql.DataSource;
@@ -88,11 +91,11 @@ public class BatchConfig {
 	@StepScope
 	StaxEventItemReader<CustomerData> customerDataReader(@Value("#{jobParameters['fileName']}") String file) throws MalformedURLException {
 
-		LOGGER.info("StaxEventItemReader:fileName: {}", file);
+		LOGGER.info("customerDataReader:fileName: {}", file);
 
 		StaxEventItemReader<CustomerData> reader = new StaxEventItemReader<>();
 		reader.setResource(new UrlResource(file));
-		reader.setFragmentRootElementNames(new String[] { "customer" });
+		reader.setFragmentRootElementNames(new String[] { BATCH_JOB_ROOT_ELEMENT });
 		reader.setUnmarshaller(newCustomerDataMarshaller());
 		return reader;
 	}
@@ -112,7 +115,7 @@ public class BatchConfig {
 	ItemWriterAdapter<Customer> customerItemWriter(CustomerService customerService) {
 		ItemWriterAdapter<Customer> writer = new ItemWriterAdapter<>();
 		writer.setTargetObject(customerService);
-		writer.setTargetMethod("create");
+		writer.setTargetMethod(BATCH_JOB_TARGET_METHOD);
 		return writer;
 	}
 }

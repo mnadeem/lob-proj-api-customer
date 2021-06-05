@@ -1,6 +1,10 @@
 package com.org.lob.project.messaging;
 
 
+import static com.org.lob.support.Constants.BATCH_JOB_FILE_NAME;
+import static com.org.lob.support.Constants.BATCH_JOB_ID;
+import static com.org.lob.support.Constants.BATCH_JOB_LAUNCH_DATE;
+
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -61,9 +65,9 @@ public class BatchProcessMQConsumer {
 
 	private JobParameters jobParams(BatchProcessEvent batchProcessEvent) {
 		return new JobParametersBuilder()
-				.addString("JobID", String.valueOf(System.currentTimeMillis()))
-				.addString("fileName", batchProcessEvent.getFilePath())
-				.addDate("launchDate", new Date())
+				.addString(BATCH_JOB_ID, String.valueOf(System.currentTimeMillis()))
+				.addString(BATCH_JOB_FILE_NAME, batchProcessEvent.getFilePath())
+				.addDate(BATCH_JOB_LAUNCH_DATE, new Date())
 				.toJobParameters();
 	}
 }
