@@ -90,7 +90,7 @@ public class DefaultJwtTokenService implements JwtTokenService {
 				.setSubject(subject)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(tokenDurationInMinutes)))
-				.signWith(SignatureAlgorithm.HS512, jwtSecret)
+				.signWith(SignatureAlgorithm.HS512, jwtSecret.getBytes())
 				.compact();
 	}
 
