@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -25,13 +26,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 public class DefaultJwtTokenService implements JwtTokenService {
 
-	public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000;
-
 	private static final String CLAIM_ROLES = "roles";
 	//private static final String CLAIM_EMAIL = "email";
 
 	@Value("${app.jwt.secret}")
 	private String jwtSecret;
+
+	@Value("${app.jwt.token_duration.minutes}")
+	private long tokenDurationInMinutes;
 
 	@Override
 	public String getUsername(String token) {
@@ -87,7 +89,7 @@ public class DefaultJwtTokenService implements JwtTokenService {
 				.setClaims(claims)
 				.setSubject(subject)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
+				.setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(tokenDurationInMinutes)))
 				.signWith(SignatureAlgorithm.HS512, jwtSecret)
 				.compact();
 	}
