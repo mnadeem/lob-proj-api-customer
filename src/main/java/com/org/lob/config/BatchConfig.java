@@ -1,5 +1,6 @@
 package com.org.lob.config;
 
+import static com.org.lob.support.Constants.BATCH_JOB_KEY_LOCAL_FILE_PATH;
 import static com.org.lob.support.Constants.BATCH_JOB_ROOT_ELEMENT;
 import static com.org.lob.support.Constants.BATCH_JOB_TARGET_METHOD;
 
@@ -92,7 +93,7 @@ public class BatchConfig {
         CopyFileTasklet task = new CopyFileTasklet();
         task.setFileName(file);
         task.setLocalFileBasePath("");
-        task.setLocalFilePathKey("fileName");
+        task.setLocalFilePathKey(BATCH_JOB_KEY_LOCAL_FILE_PATH);
         return stepBuilderFactory.get(stepName)
                 .tasklet(task)
                 .build();

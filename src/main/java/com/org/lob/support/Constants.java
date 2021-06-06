@@ -7,6 +7,7 @@ public final class Constants {
 	public static final String BATCH_JOB_LAUNCH_DATE = "launchDate";
 	public static final String BATCH_JOB_ROOT_ELEMENT = "customer";
 	public static final String BATCH_JOB_TARGET_METHOD = "create";
+	public static final String BATCH_JOB_KEY_LOCAL_FILE_PATH = "fileName";
 
 	public static final String SYSTEM_USER_DEFAULT = "SYSTEM";
 
