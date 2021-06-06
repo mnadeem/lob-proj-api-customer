@@ -6,7 +6,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.EnumSet;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 
 import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
@@ -18,7 +17,6 @@ import com.hierynomus.smbj.session.Session;
 import com.hierynomus.smbj.share.DiskShare;
 import com.hierynomus.smbj.share.File;
 
-@Repository
 public class DefaultSambaFileRepository implements SambaFileRepository {
 
 	@Value("${samba.share.server}")

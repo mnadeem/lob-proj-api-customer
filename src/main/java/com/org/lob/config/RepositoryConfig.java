@@ -19,7 +19,10 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.hierynomus.smbj.SMBClient;
 import com.org.lob.support.audit.SpringSecurityAuditorAware;
+import com.org.lob.support.repository.DefaultSambaFileRepository;
+import com.org.lob.support.repository.SambaFileRepository;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
@@ -31,27 +34,27 @@ public class RepositoryConfig {
 	@Primary
 	@Bean(name = "projectDataSourceProperties")
 	// @ConfigurationProperties("project.datasource")
-	public DataSourceProperties dataSourceProperties() {
+	DataSourceProperties dataSourceProperties() {
 		return new DataSourceProperties();
 	}
 
 	@Primary
 	@Bean(name = "projectDataSource")
 	// @ConfigurationProperties("project.datasource.configuration")
-	public HikariDataSource dataSource(@Qualifier("projectDataSourceProperties") DataSourceProperties properties) {
+	HikariDataSource dataSource(@Qualifier("projectDataSourceProperties") DataSourceProperties properties) {
 		return properties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
 	}
 
 	@Primary
 	@Autowired
 	@Bean(name = "projectNamedParamJdbcTemplate")
-	public NamedParameterJdbcTemplate cdrNamedParamJdbcTemplate(@Qualifier("projectDataSource") DataSource dataSource) {
+	NamedParameterJdbcTemplate cdrNamedParamJdbcTemplate(@Qualifier("projectDataSource") DataSource dataSource) {
 		return new NamedParameterJdbcTemplate(dataSource);
 	}
 
 	@Primary
 	@Bean(name = "projectEntityManagerFactory")
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder,
+	LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder,
 			@Qualifier("projectDataSource") DataSource dataSource) {
 		return builder.dataSource(dataSource).packages("com.org.lob.project.repository").persistenceUnit("project")
 				.build();
@@ -60,9 +63,14 @@ public class RepositoryConfig {
 
 	@Primary
 	@Bean(name = "projectTransactionManager")
-	public PlatformTransactionManager transactionManager(
+	PlatformTransactionManager transactionManager(
 			@Qualifier("projectEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
 		return new JpaTransactionManager(entityManagerFactory);
+	}
+	
+	@Bean
+	SambaFileRepository sambaFileRepository(SMBClient smbClient) {
+		return new DefaultSambaFileRepository(smbClient);
 	}
 
 	@Bean

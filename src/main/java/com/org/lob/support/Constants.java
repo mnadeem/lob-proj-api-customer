@@ -10,6 +10,10 @@ public final class Constants {
 	public static final String BATCH_JOB_KEY_LOCAL_FILE_PATH = "fileName";
 
 	public static final String SYSTEM_USER_DEFAULT = "SYSTEM";
+	
+	public static final String SPACE = " ";
+	
+	public static final String PASSWORD_FAKE = "faKE";
 
 	public static final String PATH_VARIABLE_ID = "id";
 	public static final String REQUEST_PARAM_PAGE_NUMBER = "pageNumber";
