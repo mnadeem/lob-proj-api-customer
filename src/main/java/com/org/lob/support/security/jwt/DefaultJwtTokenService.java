@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -27,14 +26,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class DefaultJwtTokenService implements JwtTokenService {
 
 	private static final String CLAIM_ROLES = "roles";
-
 	private static final String ROLE_SYSTEM = "SYSTEM";
-
-	@Value("${app.jwt.secret}")
-	private String jwtSecret;
-
-	@Value("${app.jwt.token_duration.minutes}")
+	
+	private String jwtSecret;	
 	private long tokenDurationInMinutes;
+
+	public DefaultJwtTokenService(String jwtSecret, long tokenDurationInMinutes) {
+		this.jwtSecret = jwtSecret;
+		this.tokenDurationInMinutes = tokenDurationInMinutes;
+	}
 
 	@Override
 	public String getUsername(String token) {

@@ -30,7 +30,7 @@ public class DefaultSambaFileRepository implements SambaFileRepository {
 	@Value("${samba.share.name}")
 	private String sambaShareName;
 
-	private SMBClient smbClient;
+	private final SMBClient smbClient;
 
 	public DefaultSambaFileRepository(SMBClient smbClient) {
 		this.smbClient = smbClient;

@@ -21,7 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-	private JwtTokenService JwtTokenService;
+	private final JwtTokenService JwtTokenService;
 
 	public JwtTokenFilter(JwtTokenService jwtTokenService) {
 		JwtTokenService = jwtTokenService;

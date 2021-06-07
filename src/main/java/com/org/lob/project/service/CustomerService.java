@@ -19,7 +19,7 @@ public class CustomerService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerService.class);
 
-	private CustomerRepository customerRepository;
+	private final CustomerRepository customerRepository;
 
 	public CustomerService(CustomerRepository customerRepository) {
 		this.customerRepository = customerRepository;

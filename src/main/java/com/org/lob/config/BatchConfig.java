@@ -47,8 +47,8 @@ public class BatchConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BatchConfig.class);
 
-	private JobBuilderFactory jobBuilderFactory;	
-	private StepBuilderFactory stepBuilderFactory;	
+	private final JobBuilderFactory jobBuilderFactory;	
+	private final StepBuilderFactory stepBuilderFactory;	
 
 	BatchConfig(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory) {
 		this.jobBuilderFactory = jobBuilderFactory;

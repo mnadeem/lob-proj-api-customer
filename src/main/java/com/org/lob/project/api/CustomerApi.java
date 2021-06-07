@@ -35,7 +35,7 @@ import com.org.lob.project.service.CustomerService;
 @RequestMapping(REQUEST_MAPPING_CUSTOMER)
 public class CustomerApi {
 
-	private CustomerService customerService;
+	private final CustomerService customerService;
 
 	public CustomerApi(CustomerService customerService) {
 		this.customerService = customerService;

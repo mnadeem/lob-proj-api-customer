@@ -30,9 +30,9 @@ public class BatchProcessMQConsumer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BatchProcessMQConsumer.class);
 
-	private ObjectMapper mapper;
-	private JobLauncher jobLauncher;
-	private Job job;
+	private final ObjectMapper mapper;
+	private final JobLauncher jobLauncher;
+	private final Job job;
 
 	public BatchProcessMQConsumer(ObjectMapper mapper, JobLauncher jobLauncher, Job job) {
 		this.mapper = mapper;
