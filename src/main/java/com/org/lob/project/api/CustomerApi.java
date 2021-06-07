@@ -45,7 +45,7 @@ public class CustomerApi {
 	public ResponseEntity<?> getCustomerDetail(
 			@PathVariable(name = PATH_VARIABLE_ID) @Length(min = 1) @Positive Long customerId) {
 		Optional<Customer> customer = getCustomerById(customerId);
-		if (customer.isEmpty()) {
+		if (!customer.isPresent()) {
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 		}
 		return ResponseEntity.ok(customer.get());
@@ -93,7 +93,7 @@ public class CustomerApi {
 			@RequestBody Customer customer) {
 		try {
 			Optional<Customer> customerOptional = getCustomerById(customerId);
-			if (customerOptional.isEmpty()) {
+			if (!customerOptional.isPresent()) {
 				return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 			}
 			customer.setId(customerId);
@@ -108,7 +108,7 @@ public class CustomerApi {
 	public ResponseEntity<Void> deleteCustomer(
 			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) @Positive Long customerId) {
 		Optional<Customer> customer = getCustomerById(customerId);
-		if (customer.isEmpty()) {
+		if (!customer.isPresent()) {
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 		}
 		customerService.deleteCustomer(null);

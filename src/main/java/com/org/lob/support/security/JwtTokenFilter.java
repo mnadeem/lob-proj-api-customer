@@ -1,11 +1,11 @@
 package com.org.lob.support.security;
 
 import static com.org.lob.support.Constants.SPACE;
-import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -49,7 +49,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 userDetails, null,
-                ofNullable(userDetails).map(UserDetails::getAuthorities).orElse(of())
+                ofNullable(userDetails).map(UserDetails::getAuthorities).orElse(Collections.emptyList())
         );
 
         authentication

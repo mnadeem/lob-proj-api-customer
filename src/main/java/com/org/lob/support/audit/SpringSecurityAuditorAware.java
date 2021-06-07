@@ -22,6 +22,6 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
                  .map(User.class::cast)
                  .map(User::getUsername);
 
-    	return secured.isEmpty() ? Optional.of(SYSTEM_USER_DEFAULT) : secured;
+    	return !secured.isPresent() ? Optional.of(SYSTEM_USER_DEFAULT) : secured;
     }
 }

@@ -1,6 +1,6 @@
 package com.org.lob.support.batch;
 
-import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class CopySambaFileTasklet implements Tasklet, InitializingBean {
 	private void copyFile(String fileName, String localFilePath) throws Exception {
 		sambaFileRepository.execute((share) -> {
 			try {
-				sambaFileRepository.copySambaFile(share, fileName, Path.of(localFilePath));
+				sambaFileRepository.copySambaFile(share, fileName, Paths.get(localFilePath));
 			} catch (Exception e) {
 				LOGGER.error("Error Copying file {}", fileName, e);
 				throw new UnexpectedJobExecutionException("Error Copying file " + fileName);

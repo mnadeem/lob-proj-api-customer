@@ -43,7 +43,7 @@ public class CustomerService {
 	public Customer update(Customer customer) {
 		LOGGER.debug("Updating a customer with id: {}", customer.getId());
 		Optional<Customer> optionalCustomer = customerRepository.findById(customer.getId());
-		if (optionalCustomer.isEmpty()) {
+		if (!optionalCustomer.isPresent()) {
 			LOGGER.error("Unable to update customer by id {}", customer.getId());
 			throw new RuntimeException("Customer does not exists");
 		}
