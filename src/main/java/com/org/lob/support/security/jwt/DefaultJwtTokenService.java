@@ -1,8 +1,9 @@
-package com.org.lob.support.security;
+package com.org.lob.support.security.jwt;
 
 import static com.org.lob.support.Constants.PASSWORD_FAKE;
 import static java.util.Optional.ofNullable;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -27,7 +27,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class DefaultJwtTokenService implements JwtTokenService {
 
 	private static final String CLAIM_ROLES = "roles";
-	//private static final String CLAIM_EMAIL = "email";
+
+	private static final String ROLE_SYSTEM = "SYSTEM";
 
 	@Value("${app.jwt.secret}")
 	private String jwtSecret;
@@ -49,7 +50,6 @@ public class DefaultJwtTokenService implements JwtTokenService {
 	public User getUser(String token) {
 		Claims claims = getAllClaimsFromToken(token);
 		String userName = claims.getSubject();
-		//String email = claims.get(CLAIM_EMAIL, String.class);
 		@SuppressWarnings("unchecked")
 		List<String> roles = (List<String>) claims.get(CLAIM_ROLES);
 		return new User(userName, PASSWORD_FAKE, buildAuth(roles));
@@ -72,9 +72,9 @@ public class DefaultJwtTokenService implements JwtTokenService {
 	}
 
 	@Override
-	public String generateToken(UserDetails userDetails) {
+	public JwtToken generateToken(String user) {
 		Map<String, Object> claims = new HashMap<>();
-		return doGenerateToken(claims, userDetails.getUsername());
+		return doGenerateToken(claims, user);
 	}
 
 	// while creating the token -
@@ -83,15 +83,23 @@ public class DefaultJwtTokenService implements JwtTokenService {
 	// 3. According to JWS Compact
 	// Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
 	// compaction of the JWT to a URL-safe string
-	private String doGenerateToken(Map<String, Object> claims, String subject) {
+	private JwtToken doGenerateToken(Map<String, Object> claims, String subject) {
 
-		return Jwts.builder()
+		long currentTime = System.currentTimeMillis();
+		long expiration = currentTime + TimeUnit.MINUTES.toMillis(tokenDurationInMinutes);
+		Date iat = new Date(currentTime);
+		Date exp = new Date(expiration);
+
+		String token = Jwts.builder()
 				.setClaims(claims)
 				.setSubject(subject)
-				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(tokenDurationInMinutes)))
+				.setIssuedAt(iat)
+				.setExpiration(exp)
+				.claim(CLAIM_ROLES, Arrays.asList(ROLE_SYSTEM))
 				.signWith(SignatureAlgorithm.HS512, jwtSecret.getBytes())
 				.compact();
+
+		return new JwtToken(iat, exp, token);
 	}
 
 	@Override

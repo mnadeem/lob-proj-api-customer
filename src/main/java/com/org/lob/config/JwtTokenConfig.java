@@ -3,9 +3,9 @@ package com.org.lob.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.org.lob.support.security.DefaultJwtTokenService;
-import com.org.lob.support.security.JwtTokenFilter;
-import com.org.lob.support.security.JwtTokenService;
+import com.org.lob.support.security.jwt.DefaultJwtTokenService;
+import com.org.lob.support.security.jwt.JwtTokenFilter;
+import com.org.lob.support.security.jwt.JwtTokenService;
 
 @Configuration
 public class JwtTokenConfig {

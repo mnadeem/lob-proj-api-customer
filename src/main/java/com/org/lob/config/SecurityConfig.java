@@ -17,7 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import com.org.lob.support.security.JwtTokenFilter;
+import com.org.lob.support.security.jwt.JwtTokenFilter;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(

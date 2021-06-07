@@ -1,9 +1,8 @@
-package com.org.lob.support.security;
+package com.org.lob.support.security.jwt;
 
 import java.util.Date;
 
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public interface JwtTokenService {
 	
@@ -15,5 +14,5 @@ public interface JwtTokenService {
 
     boolean validate(String token);
 
-    String generateToken(UserDetails userDetails);
+    JwtToken generateToken(String user);
 }

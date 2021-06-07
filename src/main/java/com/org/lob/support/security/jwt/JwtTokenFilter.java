@@ -1,4 +1,4 @@
-package com.org.lob.support.security;
+package com.org.lob.support.security.jwt;
 
 import static com.org.lob.support.Constants.SPACE;
 import static java.util.Optional.ofNullable;
