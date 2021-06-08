@@ -29,15 +29,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.org.lob.project.api.model.ErrorMessage;
 import com.org.lob.project.repository.entity.Customer;
-import com.org.lob.project.service.CustomerService;
+import com.org.lob.project.service.DefaultCustomerService;
 
 @RestController
 @RequestMapping(REQUEST_MAPPING_CUSTOMER)
 public class CustomerApi {
 
-	private final CustomerService customerService;
+	private final DefaultCustomerService customerService;
 
-	public CustomerApi(CustomerService customerService) {
+	public CustomerApi(DefaultCustomerService customerService) {
 		this.customerService = customerService;
 	}
 
