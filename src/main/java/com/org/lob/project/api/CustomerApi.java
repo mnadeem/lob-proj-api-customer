@@ -111,7 +111,7 @@ public class CustomerApi {
 		if (!customer.isPresent()) {
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 		}
-		customerService.deleteCustomer(null);
+		customerService.deleteCustomer(customerId);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
