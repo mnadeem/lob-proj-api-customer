@@ -3,7 +3,9 @@ package com.org.lob.project.api;
 import static com.org.lob.support.Constants.PATH_VARIABLE_ID;
 import static com.org.lob.support.Constants.REQUEST_MAPPING_CUSTOMER;
 import static com.org.lob.support.Constants.REQUEST_PARAM_PAGE_NUMBER;
+import static com.org.lob.support.Constants.REQUEST_PARAM_PAGE_SIZE;
 
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -30,6 +32,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.org.lob.project.api.model.ErrorMessage;
 import com.org.lob.project.repository.entity.Customer;
 import com.org.lob.project.service.DefaultCustomerService;
+import com.org.lob.project.service.model.CustomerSearchRequest;
 
 @RestController
 @RequestMapping(REQUEST_MAPPING_CUSTOMER)
@@ -54,9 +57,24 @@ public class CustomerApi {
 	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getAllCustomers(
 			@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER, required = true) @NotBlank(message = "{page_number.not_empty}") @Positive Integer pageNumber,
-			@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER, required = true) @Positive Integer pageSize) {
+			@RequestParam(name = REQUEST_PARAM_PAGE_SIZE, required = true) @Positive Integer pageSize) {
 		try {
 			Page<Customer> page = getCustomersPage(pageNumber, pageSize);
+			return ResponseEntity.ok(page.getContent());
+		} catch (Exception ex) {
+			return handleException(ex);
+		}
+	}
+
+	@GetMapping(path = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getAllCustomers(@RequestParam Map<String, String> allRequestParams,
+			@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER, required = true) @Positive Integer pageNumber,
+			@RequestParam(name = REQUEST_PARAM_PAGE_SIZE, required = true) @Positive Integer pageSize) {
+
+		CustomerSearchRequest searchRequest = new CustomerSearchRequest(allRequestParams);
+		PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+		try {
+			Page<Customer> page = customerService.search(searchRequest, pageRequest);
 			return ResponseEntity.ok(page.getContent());
 		} catch (Exception ex) {
 			return handleException(ex);

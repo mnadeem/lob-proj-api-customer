@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import com.org.lob.project.repository.CustomerRepository;
 import com.org.lob.project.repository.entity.Customer;
+import com.org.lob.project.service.model.CustomerSearchRequest;
+import com.org.lob.project.service.support.CustomerSpecification;
 
 @Service
 public class DefaultCustomerService implements CustomerService {
@@ -72,7 +74,7 @@ public class DefaultCustomerService implements CustomerService {
 	public Page<Customer> findAll(Pageable pageable) {
 		return customerRepository.findAll(pageable);
 	}
-	
+
 	@Override
 	public void deleteCustomer(Long customerId) {
 		try {
@@ -81,5 +83,10 @@ public class DefaultCustomerService implements CustomerService {
 			LOGGER.error("Unable to delete customer by id {}", customerId);
 			throw new RuntimeException("Customer does not exists");
 		}
+	}
+
+	@Override
+	public Page<Customer> search(CustomerSearchRequest request, Pageable pageable) {
+		return customerRepository.findAll(new CustomerSpecification(request), pageable);
 	}
 }
