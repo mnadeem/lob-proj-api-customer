@@ -27,6 +27,9 @@ public class CustomerSpecification implements Specification<Customer> {
 		this.request = request;
 	}
 
+	/**
+	 * TODO: Prefer using Query DSL (https://spring.io/blog/2011/04/26/advanced-spring-data-jpa-specifications-and-querydsl/) so that we don't have to hard code attribute name
+	 */
 	@Override
 	public Predicate toPredicate(Root<Customer> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 		List<Predicate> predicates = new ArrayList<>();
