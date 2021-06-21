@@ -26,7 +26,7 @@ public class DefaultCustomerService implements CustomerService {
 	public DefaultCustomerService(CustomerRepository customerRepository) {
 		this.customerRepository = customerRepository;
 	}
-	
+
 	@Override
 	public Optional<Customer> getCustomerById(Long customerId) {
 		LOGGER.debug("Fetching customer by id: {}", customerId);
@@ -88,5 +88,10 @@ public class DefaultCustomerService implements CustomerService {
 	@Override
 	public Page<Customer> search(CustomerSearchRequest request, Pageable pageable) {
 		return customerRepository.findAll(new CustomerSpecification(request), pageable);
+	}
+
+	@Override
+	public Iterable<Customer> findAllById(Iterable<Long> ids) {
+		return customerRepository.findAllById(ids);
 	}
 }

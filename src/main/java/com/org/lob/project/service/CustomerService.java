@@ -12,7 +12,9 @@ import com.org.lob.project.service.model.CustomerSearchRequest;
 public interface CustomerService {
 	
 	Optional<Customer> getCustomerById(Long customerId);
-	
+
+	Iterable<Customer> findAllById(Iterable<Long> ids);
+
 	Customer create(Customer customer);
 	
 	Customer update(Customer customer);

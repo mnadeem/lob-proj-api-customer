@@ -5,6 +5,7 @@ import static com.org.lob.support.Constants.REQUEST_MAPPING_CUSTOMER;
 import static com.org.lob.support.Constants.REQUEST_PARAM_PAGE_NUMBER;
 import static com.org.lob.support.Constants.REQUEST_PARAM_PAGE_SIZE;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -52,6 +53,14 @@ public class CustomerApi {
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 		}
 		return ResponseEntity.ok(customer.get());
+	}
+
+	//GET /?ids=1&ids=2&ids=3
+	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getByIds(@RequestParam List<Long> ids) {
+		Iterable<Customer> customers = customerService.findAllById(ids);
+
+		return ResponseEntity.ok(customers);
 	}
 
 	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
