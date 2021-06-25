@@ -15,6 +15,7 @@ import com.org.lob.project.repository.CustomerRepository;
 import com.org.lob.project.repository.entity.Customer;
 import com.org.lob.project.service.model.CustomerSearchRequest;
 import com.org.lob.project.service.support.CustomerSpecification;
+import com.org.lob.project.service.support.ProjectException;
 
 @Service
 public class DefaultCustomerService implements CustomerService {
@@ -32,7 +33,7 @@ public class DefaultCustomerService implements CustomerService {
 		LOGGER.debug("Fetching customer by id: {}", customerId);
 		return customerRepository.findById(customerId);
 	}
-	
+
 	@Override
 	public Customer create(Customer customer) {
 		try {
@@ -40,17 +41,17 @@ public class DefaultCustomerService implements CustomerService {
 			return customerRepository.save(customer);
 		} catch (DataIntegrityViolationException e) {
 			LOGGER.error("Customer already exists with emailAddress: {}", customer.getEmailAddress());
-			throw new RuntimeException("Customer already exists with same emailAddress");
+			throw ProjectException.duplicateRecord("Customer already exists with same emailAddress", new String[] {customer.getEmailAddress()});
 		}
 	}
-	
+
 	@Override
 	public Customer update(Customer customer) {
 		LOGGER.debug("Updating a customer with id: {}", customer.getId());
 		Optional<Customer> optionalCustomer = customerRepository.findById(customer.getId());
 		if (!optionalCustomer.isPresent()) {
 			LOGGER.error("Unable to update customer by id {}", customer.getId());
-			throw new RuntimeException("Customer does not exists");
+			throw ProjectException.noRecordFound("Customer does not exists", new String[] {String.valueOf(customer.getId())});
 		}
 		Customer existingCustomer = optionalCustomer.get();
 		existingCustomer.setAddresses(customer.getAddresses());
@@ -63,7 +64,7 @@ public class DefaultCustomerService implements CustomerService {
 	public List<Customer> findByName(String name) {
 		return customerRepository.findAllByFirstNameContainingOrLastNameContaining(name, name);
 	}
-	
+
 	@Override
 	public Optional<Customer> findByEmail(String email) {
 		return customerRepository.findCustomerByEmailAddress(email);
@@ -81,7 +82,7 @@ public class DefaultCustomerService implements CustomerService {
 			customerRepository.deleteById(customerId);
 		} catch (EmptyResultDataAccessException e) {
 			LOGGER.error("Unable to delete customer by id {}", customerId);
-			throw new RuntimeException("Customer does not exists");
+			throw ProjectException.noRecordFound("Customer does not exists", e, new String[] {String.valueOf(customerId)});
 		}
 	}
 

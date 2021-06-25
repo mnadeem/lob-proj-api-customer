@@ -34,6 +34,7 @@ import com.org.lob.project.api.model.ErrorMessage;
 import com.org.lob.project.repository.entity.Customer;
 import com.org.lob.project.service.DefaultCustomerService;
 import com.org.lob.project.service.model.CustomerSearchRequest;
+import com.org.lob.project.service.support.ProjectException;
 
 @RestController
 @RequestMapping(REQUEST_MAPPING_CUSTOMER)
@@ -132,14 +133,19 @@ public class CustomerApi {
 	}
 
 	@DeleteMapping(path = "/{id}")
-	public ResponseEntity<Void> deleteCustomer(
+	public ResponseEntity<?> deleteCustomer(
 			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) @Positive Long customerId) {
-		Optional<Customer> customer = getCustomerById(customerId);
-		if (!customer.isPresent()) {
-			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+		
+		try {
+			Optional<Customer> customer = getCustomerById(customerId);
+			if (!customer.isPresent()) {
+				return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+			}
+			customerService.deleteCustomer(customerId);
+			return new ResponseEntity<Void>(HttpStatus.OK);
+		} catch (Exception ex) {
+			return handleException(ex);
 		}
-		customerService.deleteCustomer(customerId);
-		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
 	private Optional<Customer> getCustomerById(Long customerId) {
@@ -147,8 +153,26 @@ public class CustomerApi {
 	}
 
 	private ResponseEntity<ErrorMessage> handleException(Exception ex) {
-		ex.printStackTrace();
-		ErrorMessage error = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
-		return ResponseEntity.badRequest().body(error);
+		ErrorMessage errorMessage = null;
+		if (ex instanceof ProjectException) {
+			errorMessage = getErrorMessage((ProjectException) ex);			
+		} else {
+			errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+		}		
+		return ResponseEntity.badRequest().body(errorMessage);
+	}
+
+	private ErrorMessage getErrorMessage(ProjectException pe) {
+		ErrorMessage errorMessage;
+		switch(pe.getErrorCode()) {
+			case DATA_EMPTY:
+			case DATA_DUPLICATE:
+			case DATA_INTEGRITY:
+				errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), pe.getFormattedMessage());
+				break;
+			default:
+				errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), pe.getFormattedMessage());
+		}
+		return errorMessage;
 	}
 }
