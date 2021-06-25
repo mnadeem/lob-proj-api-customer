@@ -135,7 +135,7 @@ public class CustomerApi {
 	@DeleteMapping(path = "/{id}")
 	public ResponseEntity<?> deleteCustomer(
 			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) @Positive Long customerId) {
-		
+
 		try {
 			Optional<Customer> customer = getCustomerById(customerId);
 			if (!customer.isPresent()) {
