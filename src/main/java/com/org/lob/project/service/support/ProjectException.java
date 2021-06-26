@@ -34,7 +34,8 @@ public class ProjectException extends RuntimeException {
 		return errorCode;
 	}
 
-	public String getFormattedMessage() {
+	@Override
+	public String getMessage() {
 		return getErrorCode().getFormattedMessage(params);
 	}
 

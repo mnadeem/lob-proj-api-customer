@@ -168,10 +168,10 @@ public class CustomerApi {
 			case DATA_EMPTY:
 			case DATA_DUPLICATE:
 			case DATA_INTEGRITY:
-				errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), pe.getFormattedMessage());
+				errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), pe.getMessage());
 				break;
 			default:
-				errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), pe.getFormattedMessage());
+				errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), pe.getMessage());
 		}
 		return errorMessage;
 	}
