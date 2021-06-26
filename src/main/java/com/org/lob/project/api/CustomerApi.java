@@ -162,16 +162,16 @@ public class CustomerApi {
 		return ResponseEntity.badRequest().body(errorMessage);
 	}
 
-	private ErrorMessage getErrorMessage(ProjectException pe) {
+	private ErrorMessage getErrorMessage(ProjectException ex) {
 		ErrorMessage errorMessage;
-		switch(pe.getErrorCode()) {
+		switch(ex.getErrorCode()) {
 			case DATA_EMPTY:
 			case DATA_DUPLICATE:
 			case DATA_INTEGRITY:
-				errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), pe.getMessage());
+				errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
 				break;
 			default:
-				errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), pe.getMessage());
+				errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
 		}
 		return errorMessage;
 	}
