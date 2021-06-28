@@ -41,7 +41,7 @@ public class DefaultCustomerService implements CustomerService {
 			return customerRepository.save(customer);
 		} catch (DataIntegrityViolationException e) {
 			LOGGER.error("Customer already exists with emailAddress: {}", customer.getEmailAddress());
-			throw ProjectException.duplicateRecord("Customer already exists with same emailAddress", new String[] {customer.getEmailAddress()});
+			throw ProjectException.duplicateRecord("Customer already exists with same emailAddress " + customer.getEmailAddress());
 		}
 	}
 
@@ -51,7 +51,7 @@ public class DefaultCustomerService implements CustomerService {
 		Optional<Customer> optionalCustomer = customerRepository.findById(customer.getId());
 		if (!optionalCustomer.isPresent()) {
 			LOGGER.error("Unable to update customer by id {}", customer.getId());
-			throw ProjectException.noRecordFound("Customer does not exists", new String[] {String.valueOf(customer.getId())});
+			throw ProjectException.noRecordFound("Customer does not exists " + customer.getId());
 		}
 		Customer existingCustomer = optionalCustomer.get();
 		existingCustomer.setAddresses(customer.getAddresses());
@@ -82,7 +82,7 @@ public class DefaultCustomerService implements CustomerService {
 			customerRepository.deleteById(customerId);
 		} catch (EmptyResultDataAccessException e) {
 			LOGGER.error("Unable to delete customer by id {}", customerId);
-			throw ProjectException.noRecordFound("Customer does not exists", e, new String[] {String.valueOf(customerId)});
+			throw ProjectException.noRecordFound("Customer does not exists " + customerId);
 		}
 	}
 
