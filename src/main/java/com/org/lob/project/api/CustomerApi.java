@@ -5,7 +5,6 @@ import static com.org.lob.support.Constants.REQUEST_MAPPING_CUSTOMER;
 import static com.org.lob.support.Constants.REQUEST_PARAM_PAGE_NUMBER;
 import static com.org.lob.support.Constants.REQUEST_PARAM_PAGE_SIZE;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -31,8 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.org.lob.project.api.model.ErrorMessage;
-import com.org.lob.project.repository.entity.Customer;
 import com.org.lob.project.service.DefaultCustomerService;
+import com.org.lob.project.service.model.CustomerModel;
 import com.org.lob.project.service.model.CustomerSearchRequest;
 import com.org.lob.project.service.support.ProjectException;
 
@@ -49,19 +48,11 @@ public class CustomerApi {
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getCustomerDetail(
 			@PathVariable(name = PATH_VARIABLE_ID) @Length(min = 1) @Positive Long customerId) {
-		Optional<Customer> customer = getCustomerById(customerId);
+		Optional<CustomerModel> customer = getCustomerById(customerId);
 		if (!customer.isPresent()) {
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 		}
 		return ResponseEntity.ok(customer.get());
-	}
-
-	//GET /?ids=1&ids=2&ids=3
-	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getByIds(@RequestParam List<Long> ids) {
-		Iterable<Customer> customers = customerService.findAllById(ids);
-
-		return ResponseEntity.ok(customers);
 	}
 
 	@GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -69,7 +60,7 @@ public class CustomerApi {
 			@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER, required = true) @NotBlank(message = "{page_number.not_empty}") @Positive Integer pageNumber,
 			@RequestParam(name = REQUEST_PARAM_PAGE_SIZE, required = true) @Positive Integer pageSize) {
 		try {
-			Page<Customer> page = getCustomersPage(pageNumber, pageSize);
+			Page<CustomerModel> page = getCustomersPage(pageNumber, pageSize);
 			return ResponseEntity.ok(page.getContent());
 		} catch (Exception ex) {
 			return handleException(ex);
@@ -84,28 +75,28 @@ public class CustomerApi {
 		CustomerSearchRequest searchRequest = new CustomerSearchRequest(allRequestParams);
 		PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
 		try {
-			Page<Customer> page = customerService.search(searchRequest, pageRequest);
+			Page<CustomerModel> page = customerService.search(searchRequest, pageRequest);
 			return ResponseEntity.ok(page.getContent());
 		} catch (Exception ex) {
 			return handleException(ex);
 		}
 	}
 
-	private Page<Customer> getCustomersPage(Integer pageNumber, Integer pageSize) {
+	private Page<CustomerModel> getCustomersPage(Integer pageNumber, Integer pageSize) {
 		PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
-		Page<Customer> page = customerService.findAll(pageRequest);
+		Page<CustomerModel> page = customerService.findAll(pageRequest);
 		return page;
 	}
 
 	@PostMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createCustomer(@Valid @RequestBody Customer customer, UriComponentsBuilder ucBuilder) {
+	public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomerModel customer, UriComponentsBuilder ucBuilder) {
 		try {
 
 			if (customer.getId() != null) {
 				return new ResponseEntity<Void>(HttpStatus.CONFLICT);
 			}
 
-			Customer createdCustomer = customerService.create(customer);
+			CustomerModel createdCustomer = customerService.create(customer);
 
 			return ResponseEntity
 					.created(ucBuilder.path(REQUEST_MAPPING_CUSTOMER).buildAndExpand(createdCustomer.getId()).toUri())
@@ -118,14 +109,14 @@ public class CustomerApi {
 	@PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateCustomer(
 			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) @Positive Long customerId,
-			@RequestBody Customer customer) {
+			@RequestBody CustomerModel customer) {
 		try {
-			Optional<Customer> customerOptional = getCustomerById(customerId);
+			Optional<CustomerModel> customerOptional = getCustomerById(customerId);
 			if (!customerOptional.isPresent()) {
 				return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 			}
 			customer.setId(customerId);
-			Customer updatedCustomer = customerService.update(customer);
+			CustomerModel updatedCustomer = customerService.update(customer);
 			return ResponseEntity.ok(updatedCustomer);
 		} catch (Exception ex) {
 			return handleException(ex);
@@ -137,7 +128,7 @@ public class CustomerApi {
 			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) @Positive Long customerId) {
 
 		try {
-			Optional<Customer> customer = getCustomerById(customerId);
+			Optional<CustomerModel> customer = getCustomerById(customerId);
 			if (!customer.isPresent()) {
 				return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 			}
@@ -148,7 +139,7 @@ public class CustomerApi {
 		}
 	}
 
-	private Optional<Customer> getCustomerById(Long customerId) {
+	private Optional<CustomerModel> getCustomerById(Long customerId) {
 		return customerService.getCustomerById(customerId);
 	}
 

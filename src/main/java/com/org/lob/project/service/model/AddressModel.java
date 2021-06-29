@@ -2,8 +2,8 @@ package com.org.lob.project.service.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-public class AddressData {
-	
+public class AddressModel {
+
     private Long id;
 
     private String streetAddress;
@@ -13,7 +13,7 @@ public class AddressData {
     private String zipCode;
 
     @JsonBackReference
-    private CustomerData customer;
+    private CustomerModel customerModel;
 
 	public Long getId() {
 		return id;
@@ -63,11 +63,12 @@ public class AddressData {
 		this.zipCode = zipCode;
 	}
 
-	public CustomerData getCustomer() {
-		return customer;
+	public CustomerModel getCustomerModel() {
+		return customerModel;
 	}
 
-	public void setCustomer(CustomerData customer) {
-		this.customer = customer;
+	public void setCustomerModel(CustomerModel customerModel) {
+		this.customerModel = customerModel;
 	}
+	
 }

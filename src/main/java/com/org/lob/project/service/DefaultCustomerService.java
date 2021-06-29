@@ -8,12 +8,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.org.lob.project.repository.CustomerRepository;
 import com.org.lob.project.repository.entity.Customer;
+import com.org.lob.project.service.model.CustomerModel;
 import com.org.lob.project.service.model.CustomerSearchRequest;
+import com.org.lob.project.service.support.AddressMapper;
+import com.org.lob.project.service.support.CustomerMapper;
 import com.org.lob.project.service.support.CustomerSpecification;
 import com.org.lob.project.service.support.ProjectException;
 
@@ -23,57 +27,63 @@ public class DefaultCustomerService implements CustomerService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCustomerService.class);
 
 	private final CustomerRepository customerRepository;
+	private final CustomerMapper customerMapper;
+	private final AddressMapper addressMapper;
 
-	public DefaultCustomerService(CustomerRepository customerRepository) {
+	public DefaultCustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper, AddressMapper addressMapper) {
 		this.customerRepository = customerRepository;
+		this.customerMapper = customerMapper;
+		this.addressMapper = addressMapper;
 	}
 
 	@Override
-	public Optional<Customer> getCustomerById(Long customerId) {
+	public Optional<CustomerModel> getCustomerById(Long customerId) {
 		LOGGER.debug("Fetching customer by id: {}", customerId);
-		return customerRepository.findById(customerId);
+		Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+		return optionalCustomer.isEmpty() ? Optional.empty(): Optional.of(customerMapper.toCustomerModel(optionalCustomer.get()));
 	}
 
 	@Override
-	public Customer create(Customer customer) {
+	public CustomerModel create(CustomerModel customerdata) {
 		try {
-			LOGGER.debug("Creating a new customer with emailAddress: {}", customer.getEmailAddress());
-			return customerRepository.save(customer);
+			LOGGER.debug("Creating a new customer with emailAddress: {}", customerdata.getEmailAddress());
+			return customerMapper.toCustomerModel(customerRepository.save(customerMapper.toCustomer(customerdata)));
 		} catch (DataIntegrityViolationException e) {
-			LOGGER.error("Customer already exists with emailAddress: {}", customer.getEmailAddress());
-			throw ProjectException.duplicateRecord("Customer already exists with same emailAddress " + customer.getEmailAddress());
+			LOGGER.error("Customer already exists with emailAddress: {}", customerdata.getEmailAddress());
+			throw ProjectException.duplicateRecord("Customer already exists with same emailAddress " + customerdata.getEmailAddress());
 		}
 	}
 
 	@Override
-	public Customer update(Customer customer) {
-		LOGGER.debug("Updating a customer with id: {}", customer.getId());
-		Optional<Customer> optionalCustomer = customerRepository.findById(customer.getId());
+	public CustomerModel update(CustomerModel customerData) {
+		LOGGER.debug("Updating a customer with id: {}", customerData.getId());
+		Optional<Customer> optionalCustomer = customerRepository.findById(customerData.getId());
 		if (!optionalCustomer.isPresent()) {
-			LOGGER.error("Unable to update customer by id {}", customer.getId());
-			throw ProjectException.noRecordFound("Customer does not exists " + customer.getId());
+			LOGGER.error("Unable to update customer by id {}", customerData.getId());
+			throw ProjectException.noRecordFound("Customer does not exists " + customerData.getId());
 		}
 		Customer existingCustomer = optionalCustomer.get();
-		existingCustomer.setAddresses(customer.getAddresses());
-		existingCustomer.setFirstName(customer.getFirstName());
-		existingCustomer.setLastName(customer.getLastName());
-		return customerRepository.save(existingCustomer);
+		existingCustomer.setAddresses(addressMapper.toAddressList(customerData.getAddresses()));
+		existingCustomer.setFirstName(customerData.getFirstName());
+		existingCustomer.setLastName(customerData.getLastName());
+		return customerMapper.toCustomerModel(customerRepository.save(existingCustomer));
 	}
 	
 	@Override
-	public List<Customer> findByName(String name) {
-		return customerRepository.findAllByFirstNameContainingOrLastNameContaining(name, name);
+	public List<CustomerModel> findByName(String name) {
+		return customerMapper.toCustomerModelList(customerRepository.findAllByFirstNameContainingOrLastNameContaining(name, name));
 	}
 
 	@Override
-	public Optional<Customer> findByEmail(String email) {
-		return customerRepository.findCustomerByEmailAddress(email);
+	public Optional<CustomerModel> findByEmail(String email) {
+		Optional<Customer> optionalCustomer = customerRepository.findCustomerByEmailAddress(email);
+		return optionalCustomer.isEmpty() ? Optional.empty(): Optional.of(customerMapper.toCustomerModel(optionalCustomer.get()));
 	}
 
 	// Paging implementation of findAll
 	@Override
-	public Page<Customer> findAll(Pageable pageable) {
-		return customerRepository.findAll(pageable);
+	public Page<CustomerModel> findAll(Pageable pageable) {
+		return new PageImpl<CustomerModel>( customerMapper.toCustomerModelList(customerRepository.findAll(pageable).getContent()));
 	}
 
 	@Override
@@ -87,12 +97,12 @@ public class DefaultCustomerService implements CustomerService {
 	}
 
 	@Override
-	public Page<Customer> search(CustomerSearchRequest request, Pageable pageable) {
-		return customerRepository.findAll(new CustomerSpecification(request), pageable);
+	public Page<CustomerModel> search(CustomerSearchRequest request, Pageable pageable) {
+		return new PageImpl<CustomerModel>(customerMapper.toCustomerModelList(customerRepository.findAll(new CustomerSpecification(request), pageable).getContent()));
 	}
 
 	@Override
-	public Iterable<Customer> findAllById(Iterable<Long> ids) {
-		return customerRepository.findAllById(ids);
+	public List<CustomerModel> findAllById(Iterable<Long> ids) {
+		return customerMapper.toCustomerModelList(customerRepository.findAllById(ids));
 	}
 }

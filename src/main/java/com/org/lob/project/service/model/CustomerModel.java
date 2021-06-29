@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-public class CustomerData {
+public class CustomerModel {
 
     private Long id;
     private String firstName;
@@ -16,7 +16,7 @@ public class CustomerData {
     private String emailAddress;
 
     @JsonManagedReference
-    private List<AddressData> addresses;
+    private List<AddressModel> addresses;
 
 	public Long getId() {
 		return id;
@@ -50,11 +50,11 @@ public class CustomerData {
 		this.emailAddress = emailAddress;
 	}
 
-	public List<AddressData> getAddresses() {
+	public List<AddressModel> getAddresses() {
 		return addresses;
 	}
 
-	public void setAddresses(List<AddressData> addresses) {
+	public void setAddresses(List<AddressModel> addresses) {
 		this.addresses = addresses;
 	}
 }
