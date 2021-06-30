@@ -40,7 +40,7 @@ public class DefaultCustomerService implements CustomerService {
 	public Optional<CustomerModel> getCustomerById(Long customerId) {
 		LOGGER.debug("Fetching customer by id: {}", customerId);
 		Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
-		return optionalCustomer.isEmpty() ? Optional.empty(): Optional.of(customerMapper.toCustomerModel(optionalCustomer.get()));
+		return optionalCustomer.isPresent() ? Optional.of(customerMapper.toCustomerModel(optionalCustomer.get())) : Optional.empty();
 	}
 
 	@Override
@@ -77,13 +77,13 @@ public class DefaultCustomerService implements CustomerService {
 	@Override
 	public Optional<CustomerModel> findByEmail(String email) {
 		Optional<Customer> optionalCustomer = customerRepository.findCustomerByEmailAddress(email);
-		return optionalCustomer.isEmpty() ? Optional.empty(): Optional.of(customerMapper.toCustomerModel(optionalCustomer.get()));
+		return optionalCustomer.isPresent() ? Optional.of(customerMapper.toCustomerModel(optionalCustomer.get())) : Optional.empty();
 	}
 
 	// Paging implementation of findAll
 	@Override
 	public Page<CustomerModel> findAll(Pageable pageable) {
-		return new PageImpl<CustomerModel>( customerMapper.toCustomerModels(customerRepository.findAll(pageable).getContent()));
+		return new PageImpl<>( customerMapper.toCustomerModels(customerRepository.findAll(pageable).getContent()));
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class DefaultCustomerService implements CustomerService {
 
 	@Override
 	public Page<CustomerModel> search(CustomerSearchRequest request, Pageable pageable) {
-		return new PageImpl<CustomerModel>(customerMapper.toCustomerModels(customerRepository.findAll(new CustomerSpecification(request), pageable).getContent()));
+		return new PageImpl<>(customerMapper.toCustomerModels(customerRepository.findAll(new CustomerSpecification(request), pageable).getContent()));
 	}
 
 	@Override
