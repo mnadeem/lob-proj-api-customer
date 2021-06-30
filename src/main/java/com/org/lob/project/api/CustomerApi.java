@@ -89,14 +89,14 @@ public class CustomerApi {
 	}
 
 	@PostMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomerModel customer, UriComponentsBuilder ucBuilder) {
+	public ResponseEntity<?> createCustomer(@Valid @RequestBody CustomerModel customerModel, UriComponentsBuilder ucBuilder) {
 		try {
 
-			if (customer.getId() != null) {
+			if (customerModel.getId() != null) {
 				return new ResponseEntity<Void>(HttpStatus.CONFLICT);
 			}
 
-			CustomerModel createdCustomer = customerService.create(customer);
+			CustomerModel createdCustomer = customerService.create(customerModel);
 
 			return ResponseEntity
 					.created(ucBuilder.path(REQUEST_MAPPING_CUSTOMER).buildAndExpand(createdCustomer.getId()).toUri())
@@ -109,14 +109,14 @@ public class CustomerApi {
 	@PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateCustomer(
 			@PathVariable(name = PATH_VARIABLE_ID) @NotBlank(message = "{id.not_empty}") @Length(min = 1) @Positive Long customerId,
-			@RequestBody CustomerModel customer) {
+			@RequestBody CustomerModel customerModel) {
 		try {
 			Optional<CustomerModel> customerOptional = getCustomerById(customerId);
 			if (!customerOptional.isPresent()) {
 				return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 			}
-			customer.setId(customerId);
-			CustomerModel updatedCustomer = customerService.update(customer);
+			customerModel.setId(customerId);
+			CustomerModel updatedCustomer = customerService.update(customerModel);
 			return ResponseEntity.ok(updatedCustomer);
 		} catch (Exception ex) {
 			return handleException(ex);

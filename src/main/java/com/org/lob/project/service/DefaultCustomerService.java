@@ -44,28 +44,28 @@ public class DefaultCustomerService implements CustomerService {
 	}
 
 	@Override
-	public CustomerModel create(CustomerModel customerdata) {
+	public CustomerModel create(CustomerModel customerModel) {
 		try {
-			LOGGER.debug("Creating a new customer with emailAddress: {}", customerdata.getEmailAddress());
-			return customerMapper.toCustomerModel(customerRepository.save(customerMapper.toCustomer(customerdata)));
+			LOGGER.debug("Creating a new customer with emailAddress: {}", customerModel.getEmailAddress());
+			return customerMapper.toCustomerModel(customerRepository.save(customerMapper.toCustomer(customerModel)));
 		} catch (DataIntegrityViolationException e) {
-			LOGGER.error("Customer already exists with emailAddress: {}", customerdata.getEmailAddress());
-			throw ProjectException.duplicateRecord("Customer already exists with same emailAddress " + customerdata.getEmailAddress());
+			LOGGER.error("Customer already exists with emailAddress: {}", customerModel.getEmailAddress());
+			throw ProjectException.duplicateRecord("Customer already exists with same emailAddress " + customerModel.getEmailAddress());
 		}
 	}
 
 	@Override
-	public CustomerModel update(CustomerModel customerData) {
-		LOGGER.debug("Updating a customer with id: {}", customerData.getId());
-		Optional<Customer> optionalCustomer = customerRepository.findById(customerData.getId());
+	public CustomerModel update(CustomerModel customerModel) {
+		LOGGER.debug("Updating a customer with id: {}", customerModel.getId());
+		Optional<Customer> optionalCustomer = customerRepository.findById(customerModel.getId());
 		if (!optionalCustomer.isPresent()) {
-			LOGGER.error("Unable to update customer by id {}", customerData.getId());
-			throw ProjectException.noRecordFound("Customer does not exists " + customerData.getId());
+			LOGGER.error("Unable to update customer by id {}", customerModel.getId());
+			throw ProjectException.noRecordFound("Customer does not exists " + customerModel.getId());
 		}
 		Customer existingCustomer = optionalCustomer.get();
-		existingCustomer.setAddresses(addressMapper.toAddressList(customerData.getAddresses()));
-		existingCustomer.setFirstName(customerData.getFirstName());
-		existingCustomer.setLastName(customerData.getLastName());
+		existingCustomer.setAddresses(addressMapper.toAddressList(customerModel.getAddresses()));
+		existingCustomer.setFirstName(customerModel.getFirstName());
+		existingCustomer.setLastName(customerModel.getLastName());
 		return customerMapper.toCustomerModel(customerRepository.save(existingCustomer));
 	}
 	

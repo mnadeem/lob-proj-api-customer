@@ -15,9 +15,9 @@ public interface CustomerService {
 
 	List<CustomerModel> findAllById(Iterable<Long> ids);
 
-	CustomerModel create(CustomerModel customerdata);
+	CustomerModel create(CustomerModel customerModel);
 
-	CustomerModel update(CustomerModel customer);
+	CustomerModel update(CustomerModel customerModel);
 
 	List<CustomerModel> findByName(String name);
 
