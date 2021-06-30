@@ -63,7 +63,7 @@ public class DefaultCustomerService implements CustomerService {
 			throw ProjectException.noRecordFound("Customer does not exists " + customerModel.getId());
 		}
 		Customer existingCustomer = optionalCustomer.get();
-		existingCustomer.setAddresses(addressMapper.toAddressList(customerModel.getAddresses()));
+		existingCustomer.setAddresses(addressMapper.toAddresses(customerModel.getAddresses()));
 		existingCustomer.setFirstName(customerModel.getFirstName());
 		existingCustomer.setLastName(customerModel.getLastName());
 		return customerMapper.toCustomerModel(customerRepository.save(existingCustomer));
@@ -71,7 +71,7 @@ public class DefaultCustomerService implements CustomerService {
 	
 	@Override
 	public List<CustomerModel> findByName(String name) {
-		return customerMapper.toCustomerModelList(customerRepository.findAllByFirstNameContainingOrLastNameContaining(name, name));
+		return customerMapper.toCustomerModels(customerRepository.findAllByFirstNameContainingOrLastNameContaining(name, name));
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class DefaultCustomerService implements CustomerService {
 	// Paging implementation of findAll
 	@Override
 	public Page<CustomerModel> findAll(Pageable pageable) {
-		return new PageImpl<CustomerModel>( customerMapper.toCustomerModelList(customerRepository.findAll(pageable).getContent()));
+		return new PageImpl<CustomerModel>( customerMapper.toCustomerModels(customerRepository.findAll(pageable).getContent()));
 	}
 
 	@Override
@@ -98,11 +98,11 @@ public class DefaultCustomerService implements CustomerService {
 
 	@Override
 	public Page<CustomerModel> search(CustomerSearchRequest request, Pageable pageable) {
-		return new PageImpl<CustomerModel>(customerMapper.toCustomerModelList(customerRepository.findAll(new CustomerSpecification(request), pageable).getContent()));
+		return new PageImpl<CustomerModel>(customerMapper.toCustomerModels(customerRepository.findAll(new CustomerSpecification(request), pageable).getContent()));
 	}
 
 	@Override
 	public List<CustomerModel> findAllById(Iterable<Long> ids) {
-		return customerMapper.toCustomerModelList(customerRepository.findAllById(ids));
+		return customerMapper.toCustomerModels(customerRepository.findAllById(ids));
 	}
 }

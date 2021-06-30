@@ -17,5 +17,5 @@ public interface CustomerMapper {
 
 	CustomerModel toCustomerModel(Customer source);
 
-	List<CustomerModel> toCustomerModelList(List<Customer> source);
+	List<CustomerModel> toCustomerModels(List<Customer> source);
 }

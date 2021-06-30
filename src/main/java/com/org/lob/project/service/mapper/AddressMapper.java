@@ -13,7 +13,7 @@ public interface AddressMapper {
 
 	AddressMapper INSTANCE = Mappers.getMapper(AddressMapper.class);
 
-	List<AddressModel> toCustomerModelList(List<Address> source);
+	List<AddressModel> toAddressModels(List<Address> source);
 
-	List<Address> toAddressList(List<AddressModel> source);
+	List<Address> toAddresses(List<AddressModel> source);
 }
