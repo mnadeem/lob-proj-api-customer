@@ -1,4 +1,4 @@
-package com.org.lob.project.service.support;
+package com.org.lob.project.service.specification;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,7 +2,7 @@ package com.org.lob.project.service.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-public class AddressModel {
+public class AddressModel extends AuditableModel {
 
     private Long id;
 

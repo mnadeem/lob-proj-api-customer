@@ -30,10 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.org.lob.project.api.model.ErrorMessage;
+import com.org.lob.project.exception.ProjectException;
 import com.org.lob.project.service.DefaultCustomerService;
 import com.org.lob.project.service.model.CustomerModel;
 import com.org.lob.project.service.model.CustomerSearchRequest;
-import com.org.lob.project.service.support.ProjectException;
 
 @RestController
 @RequestMapping(REQUEST_MAPPING_CUSTOMER)

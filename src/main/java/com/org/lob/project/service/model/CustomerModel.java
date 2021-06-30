@@ -6,13 +6,13 @@ import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-public class CustomerModel {
+public class CustomerModel extends AuditableModel {
 
     private Long id;
     private String firstName;
     private String lastName;
 
-	@NotBlank(message = "{email.not_empty}")
+    @NotBlank(message = "{email.not_empty}")
     private String emailAddress;
 
     @JsonManagedReference

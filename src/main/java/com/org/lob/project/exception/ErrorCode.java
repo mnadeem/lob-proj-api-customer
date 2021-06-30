@@ -1,4 +1,4 @@
-package com.org.lob.project.service.support;
+package com.org.lob.project.exception;
 
 // 001 -- 020 DATA EXCEPTION
 // 021 -- 040 SERVICE EXCEPTION

@@ -1,4 +1,4 @@
-package com.org.lob.project.service.support;
+package com.org.lob.project.exception;
 
 public class ProjectException extends RuntimeException {
 

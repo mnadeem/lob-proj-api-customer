@@ -13,7 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotBlank;
 
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
@@ -39,7 +38,6 @@ public class Customer extends Auditable implements Serializable {
 	@Column(name = "LAST_NAME")
     private String lastName;
 
-	@NotBlank(message = "{email.not_empty}")
 	@Column(name = "EMAIL_ADDRESS")
     private String emailAddress;
 

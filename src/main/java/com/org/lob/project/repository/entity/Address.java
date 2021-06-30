@@ -20,7 +20,7 @@ public class Address extends Auditable implements Serializable {
 	@Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-	
+
 	@Column(name = "STREET_ADDRESS")
     private String streetAddress;
 	@Column(name = "CITY")

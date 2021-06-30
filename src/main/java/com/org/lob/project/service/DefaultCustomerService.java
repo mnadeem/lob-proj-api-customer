@@ -12,14 +12,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.org.lob.project.exception.ProjectException;
 import com.org.lob.project.repository.CustomerRepository;
 import com.org.lob.project.repository.entity.Customer;
+import com.org.lob.project.service.mapper.AddressMapper;
+import com.org.lob.project.service.mapper.CustomerMapper;
 import com.org.lob.project.service.model.CustomerModel;
 import com.org.lob.project.service.model.CustomerSearchRequest;
-import com.org.lob.project.service.support.AddressMapper;
-import com.org.lob.project.service.support.CustomerMapper;
-import com.org.lob.project.service.support.CustomerSpecification;
-import com.org.lob.project.service.support.ProjectException;
+import com.org.lob.project.service.specification.CustomerSpecification;
 
 @Service
 public class DefaultCustomerService implements CustomerService {
