@@ -31,7 +31,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.org.lob.project.api.model.ErrorMessage;
 import com.org.lob.project.exception.ProjectException;
-import com.org.lob.project.service.DefaultCustomerService;
+import com.org.lob.project.service.CustomerService;
 import com.org.lob.project.service.model.CustomerModel;
 import com.org.lob.project.service.model.CustomerSearchRequest;
 
@@ -39,9 +39,9 @@ import com.org.lob.project.service.model.CustomerSearchRequest;
 @RequestMapping(REQUEST_MAPPING_CUSTOMER)
 public class CustomerApi {
 
-	private final DefaultCustomerService customerService;
+	private final CustomerService customerService;
 
-	public CustomerApi(DefaultCustomerService customerService) {
+	public CustomerApi(CustomerService customerService) {
 		this.customerService = customerService;
 	}
 
