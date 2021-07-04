@@ -60,8 +60,9 @@ class CustomerApiTest {
 		Long id = 1L;
 		when(customerService.getCustomerById(id)).thenReturn(Optional.of(customerModel(id)));
 
-		this.mockMvc.perform(get(REQUEST_MAPPING_CUSTOMER + '/' + id).contentType(MediaType.APPLICATION_JSON_VALUE))
-		  .andDo(print())
+		this.mockMvc.perform(get(REQUEST_MAPPING_CUSTOMER + '/' + id)
+				.contentType(MediaType.APPLICATION_JSON_VALUE))
+		  		.andDo(print())
 		  .andExpect(status().isOk())
 		  .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 		  .andExpect(jsonPath("$.firstName").value(FIRST_NAME_NADEEM));
@@ -73,7 +74,7 @@ class CustomerApiTest {
 		when(customerService.getCustomerById(anyLong())).thenReturn(Optional.empty());
 
 		this.mockMvc.perform(get(REQUEST_MAPPING_CUSTOMER + '/' + id)
-				.contentType(MediaType.APPLICATION_JSON_VALUE))
+					.contentType(MediaType.APPLICATION_JSON_VALUE))
 		        .andDo(print())
 		        .andExpect(status().isNotFound())
 		        .andExpect(content().string(""));
@@ -206,9 +207,9 @@ class CustomerApiTest {
 		when(customerService.search(any(), any())).thenReturn(new PageImpl<CustomerModel>(Collections.emptyList()));
 
 		this.mockMvc.perform(get(REQUEST_MAPPING_CUSTOMER + '/' + "search")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.param(REQUEST_PARAM_PAGE_NUMBER, String.valueOf(pageNumber))
-				.param(REQUEST_PARAM_PAGE_SIZE, String.valueOf(pageSize)))
+					.contentType(MediaType.APPLICATION_JSON_VALUE)
+					.param(REQUEST_PARAM_PAGE_NUMBER, String.valueOf(pageNumber))
+					.param(REQUEST_PARAM_PAGE_SIZE, String.valueOf(pageSize)))
 				.andDo(print())
 	        	.andExpect(status().isOk())
 	        	.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -219,9 +220,9 @@ class CustomerApiTest {
 	void createShouldResultConflict() throws Exception {	
 		
 		this.mockMvc.perform(post(REQUEST_MAPPING_CUSTOMER + '/')
-				.contentType(MediaType.APPLICATION_JSON)
-			    .content(objectMapper.writeValueAsString(customerModel(1L)))
-			    .accept(MediaType.APPLICATION_JSON))
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(customerModel(1L)))
+					.accept(MediaType.APPLICATION_JSON))
 			    .andExpect(status().isConflict());
 	}
 	
@@ -232,9 +233,9 @@ class CustomerApiTest {
 		customerModel.setEmailAddress(null);
 
 		this.mockMvc.perform(post(REQUEST_MAPPING_CUSTOMER + '/')
-				.contentType(MediaType.APPLICATION_JSON)
-			    .content(objectMapper.writeValueAsString(customerModel))
-			    .accept(MediaType.APPLICATION_JSON))
+					.contentType(MediaType.APPLICATION_JSON)
+			    	.content(objectMapper.writeValueAsString(customerModel))
+			    	.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(jsonPath("$.emailAddress").isNotEmpty());
@@ -249,9 +250,9 @@ class CustomerApiTest {
 		when(customerService.create(any())).thenReturn(customerModel(id, newCustomerModel));
 
 		this.mockMvc.perform(post(REQUEST_MAPPING_CUSTOMER + '/')
-				.contentType(MediaType.APPLICATION_JSON)
-			    .content(objectMapper.writeValueAsString(newCustomerModel))
-			    .accept(MediaType.APPLICATION_JSON))
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(newCustomerModel))
+			    	.accept(MediaType.APPLICATION_JSON))
 			    .andExpect(status().isCreated())
 			    .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
 			    .andExpect(jsonPath("$.id").value(id));
@@ -266,9 +267,9 @@ class CustomerApiTest {
 		when(customerService.create(any())).thenThrow(ApplicationException.duplicateRecord(message));
 
 		this.mockMvc.perform(post(REQUEST_MAPPING_CUSTOMER + '/')
-				.contentType(MediaType.APPLICATION_JSON)
-			    .content(objectMapper.writeValueAsString(newCustomerModel))
-			    .accept(MediaType.APPLICATION_JSON))
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(newCustomerModel))
+					.accept(MediaType.APPLICATION_JSON))
 	        	.andDo(print())
 	        	.andExpect(status().isBadRequest())
 	        	.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
