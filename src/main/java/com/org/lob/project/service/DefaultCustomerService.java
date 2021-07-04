@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.org.lob.project.exception.ProjectException;
+import com.org.lob.project.exception.ApplicationException;
 import com.org.lob.project.repository.CustomerRepository;
 import com.org.lob.project.repository.entity.Customer;
 import com.org.lob.project.service.mapper.AddressMapper;
@@ -50,7 +50,7 @@ public class DefaultCustomerService implements CustomerService {
 			return customerMapper.toCustomerModel(customerRepository.save(customerMapper.toCustomer(customerModel)));
 		} catch (DataIntegrityViolationException e) {
 			LOGGER.error("Customer already exists with emailAddress: {}", customerModel.getEmailAddress());
-			throw ProjectException.duplicateRecord("Customer already exists with same emailAddress " + customerModel.getEmailAddress());
+			throw ApplicationException.duplicateRecord("Customer already exists with same emailAddress " + customerModel.getEmailAddress());
 		}
 	}
 
@@ -60,7 +60,7 @@ public class DefaultCustomerService implements CustomerService {
 		Optional<Customer> optionalCustomer = customerRepository.findById(customerModel.getId());
 		if (!optionalCustomer.isPresent()) {
 			LOGGER.error("Unable to update customer by id {}", customerModel.getId());
-			throw ProjectException.noRecordFound("Customer does not exists " + customerModel.getId());
+			throw ApplicationException.noRecordFound("Customer does not exists " + customerModel.getId());
 		}
 		Customer existingCustomer = optionalCustomer.get();
 		existingCustomer.setAddresses(addressMapper.toAddresses(customerModel.getAddresses()));
@@ -92,7 +92,7 @@ public class DefaultCustomerService implements CustomerService {
 			customerRepository.deleteById(customerId);
 		} catch (EmptyResultDataAccessException e) {
 			LOGGER.error("Unable to delete customer by id {}", customerId);
-			throw ProjectException.noRecordFound("Customer does not exists " + customerId);
+			throw ApplicationException.noRecordFound("Customer does not exists " + customerId);
 		}
 	}
 

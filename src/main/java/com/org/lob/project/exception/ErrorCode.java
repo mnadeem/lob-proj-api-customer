@@ -3,7 +3,7 @@ package com.org.lob.project.exception;
 // 001 -- 020 DATA EXCEPTION
 // 021 -- 040 SERVICE EXCEPTION
 public enum ErrorCode {
-	DATA_EMPTY("001", "No record found: %s"), DATA_DUPLICATE("002", "Duplicate record : %s"), DATA_INTEGRITY("003", "Contraint violation for %s");
+	UNKONWN("000", "Unknown Error: %s"), DATA_EMPTY("001", "No record found: %s"), DATA_DUPLICATE("002", "Duplicate record : %s"), DATA_INTEGRITY("003", "Contraint violation for %s");
 
 	private final String code;
 	private final String messge;

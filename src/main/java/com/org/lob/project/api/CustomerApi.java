@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.org.lob.project.api.model.ErrorMessage;
-import com.org.lob.project.exception.ProjectException;
+import com.org.lob.project.exception.ApplicationException;
 import com.org.lob.project.service.CustomerService;
 import com.org.lob.project.service.model.CustomerModel;
 import com.org.lob.project.service.model.CustomerSearchRequest;
@@ -50,7 +50,7 @@ public class CustomerApi {
 			@PathVariable(name = PATH_VARIABLE_ID) @Length(min = 1) @Positive Long customerId) {
 		Optional<CustomerModel> customer = getCustomerById(customerId);
 		if (!customer.isPresent()) {
-			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		return ResponseEntity.ok(customer.get());
 	}
@@ -84,8 +84,7 @@ public class CustomerApi {
 
 	private Page<CustomerModel> getCustomersPage(Integer pageNumber, Integer pageSize) {
 		PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
-		Page<CustomerModel> page = customerService.findAll(pageRequest);
-		return page;
+		return customerService.findAll(pageRequest);
 	}
 
 	@PostMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -145,25 +144,25 @@ public class CustomerApi {
 
 	private ResponseEntity<ErrorMessage> handleException(Exception ex) {
 		ErrorMessage errorMessage = null;
-		if (ex instanceof ProjectException) {
-			errorMessage = getErrorMessage((ProjectException) ex);			
+		if (ex instanceof ApplicationException) {
+			return getErrorMessage((ApplicationException) ex);
 		} else {
 			errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+			return ResponseEntity.badRequest().body(errorMessage);
 		}		
-		return ResponseEntity.badRequest().body(errorMessage);
 	}
 
-	private ErrorMessage getErrorMessage(ProjectException ex) {
-		ErrorMessage errorMessage;
+	private ResponseEntity<ErrorMessage> getErrorMessage(ApplicationException ex) {
+		ResponseEntity<ErrorMessage> response;
 		switch(ex.getErrorCode()) {
 			case DATA_EMPTY:
 			case DATA_DUPLICATE:
 			case DATA_INTEGRITY:
-				errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+				response = ResponseEntity.badRequest().body(new ErrorMessage(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
 				break;
 			default:
-				errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+				response = ResponseEntity.internalServerError().body(new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage()));
 		}
-		return errorMessage;
+		return response;
 	}
 }
