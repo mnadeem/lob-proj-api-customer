@@ -46,7 +46,7 @@ class DefaultCustomerServiceTest {
 		
 		Optional<CustomerModel> customerModel = targetBeingTested.getCustomerById(id);
 
-		assertThat(customerModel.isPresent()).isEqualTo(true);        
+		assertThat(customerModel).isPresent();       
     }
 
 	private Customer customerWithIdOne(Long id) {
