@@ -98,7 +98,7 @@ public class CustomerApi {
 			CustomerModel createdCustomer = customerService.create(customerModel);
 
 			return ResponseEntity
-					.created(ucBuilder.path(REQUEST_MAPPING_CUSTOMER).buildAndExpand(createdCustomer.getId()).toUri())
+					.created(ucBuilder.path(REQUEST_MAPPING_CUSTOMER + "/{id}" ).buildAndExpand(createdCustomer.getId()).toUri())
 					.body(createdCustomer);
 		} catch (Exception ex) {
 			return handleException(ex);
