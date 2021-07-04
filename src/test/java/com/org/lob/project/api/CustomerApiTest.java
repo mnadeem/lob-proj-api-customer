@@ -25,7 +25,7 @@ import com.org.lob.support.security.jwt.JwtTokenFilter;
 //https://spring.io/guides/gs/testing-web/
 @WebMvcTest(CustomerApi.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class CustomerApiTest {
+class CustomerApiTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -37,7 +37,7 @@ public class CustomerApiTest {
 	private DefaultCustomerService customerService;
 
 	@Test
-	public void greetingShouldReturnMessageFromService() throws Exception {
+	void greetingShouldReturnMessageFromService() throws Exception {
 		when(customerService.getCustomerById(anyLong())).thenReturn(Optional.of(customerWithIdOne()));
 
 		this.mockMvc.perform(get("/api/v1/customer/1").contentType(MediaType.APPLICATION_JSON_VALUE))
