@@ -66,9 +66,9 @@ public class CustomerApi {
 			return handleException(ex);
 		}
 	}
-
+	//http://localhost:8091/api/v1/customer/search?pageNumber=0&pageSize=10&zipCode=444
 	@GetMapping(path = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getAllCustomers(@RequestParam Map<String, String> allRequestParams,
+	public ResponseEntity<?> searchCustomers(@RequestParam Map<String, String> allRequestParams,
 			@RequestParam(name = REQUEST_PARAM_PAGE_NUMBER, required = true) @Positive Integer pageNumber,
 			@RequestParam(name = REQUEST_PARAM_PAGE_SIZE, required = true) @Positive Integer pageSize) {
 
