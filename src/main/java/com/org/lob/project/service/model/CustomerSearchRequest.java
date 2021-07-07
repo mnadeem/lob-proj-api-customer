@@ -13,6 +13,8 @@ public class CustomerSearchRequest {
     private final String firstName;
     private final String lastName;
     private final String emailAddress;
+    private final String zipCode;
+
     private final PageRequest pageRequest;
 
     public CustomerSearchRequest(Map<String, String> params) {
@@ -20,6 +22,7 @@ public class CustomerSearchRequest {
     	this.firstName = params.get(REQUEST_PARAM_FIRST_NAME);
     	this.lastName = params.get(REQUEST_PARAM_LAST_NAME);
     	this.emailAddress = params.get(REQUEST_PARAM_EMAIL);
+    	this.zipCode = params.get(REQUEST_PARAM_ZIP_CODE);
 	}
 
     private PageRequest pageRequest(Map<String, String> params) {
@@ -28,11 +31,11 @@ public class CustomerSearchRequest {
 
     	return pageNumber != null && pageSize != null ? PageRequest.of(Integer.valueOf(pageNumber), Integer.valueOf(pageSize)) :null;
     }
-    
+
     public boolean isFirstNameValid() {
     	return StringUtils.hasText(getFirstName());
     }
-    
+
     public boolean isLastNameValid() {
     	return StringUtils.hasText(getLastName());
     }
@@ -45,6 +48,10 @@ public class CustomerSearchRequest {
     	return StringUtils.hasText(getEmailAddress());
     }
 
+    public boolean isZipCodeValid() {
+    	return StringUtils.hasText(getZipCode());
+    }
+
 	public String getFirstName() {
 		return firstName;
 	}
@@ -55,6 +62,10 @@ public class CustomerSearchRequest {
 
 	public String getEmailAddress() {
 		return emailAddress;
+	}
+
+	public String getZipCode() {
+		return zipCode;
 	}
 
 	public PageRequest getPageRequest() {

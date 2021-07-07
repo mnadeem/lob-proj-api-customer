@@ -20,6 +20,8 @@ public class CustomerSpecification implements Specification<Customer> {
 	private static final String ATTR_LAST_NAME = "lastName";
 	private static final String ATTR_FIRST_NAME = "firstName";
 	private static final String ATTR_EMAIL_ADDRESS = "emailAddress";
+	private static final String ATTR_ADDRESSES = "addresses";
+	private static final String ATTR_ZIP_CODE = "zipCode";
 
 	private final CustomerSearchRequest request;
 
@@ -51,9 +53,16 @@ public class CustomerSpecification implements Specification<Customer> {
 		if (request.isEmailValid()) {
             predicates.add(criteriaBuilder.equal(root.get(ATTR_EMAIL_ADDRESS), request.getEmailAddress()));
         }
+		
+		if (request.isZipCodeValid()) {
+			predicates.add(criteriaBuilder.equal(root.join(ATTR_ADDRESSES).get(ATTR_ZIP_CODE), request.getZipCode()));
+		}
 
         query.orderBy(criteriaBuilder.desc(root.get(ATTR_FIRST_NAME)));
-        return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        return andTogether(predicates, criteriaBuilder);
 	}
 
+	private Predicate andTogether(List<Predicate> predicates, CriteriaBuilder cb) {
+	    return cb.and(predicates.toArray(new Predicate[0]));
+	}
 }
