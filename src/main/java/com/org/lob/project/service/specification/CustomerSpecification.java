@@ -53,7 +53,8 @@ public class CustomerSpecification implements Specification<Customer> {
 		if (request.isEmailValid()) {
             predicates.add(criteriaBuilder.equal(root.get(ATTR_EMAIL_ADDRESS), request.getEmailAddress()));
         }
-		
+
+		//https://stackoverflow.com/questions/47867124/spring-data-jpa-specification-how-to-filter-a-parent-object-by-its-children-obj
 		if (request.isZipCodeValid()) {
 			predicates.add(criteriaBuilder.equal(root.join(ATTR_ADDRESSES).get(ATTR_ZIP_CODE), request.getZipCode()));
 		}
