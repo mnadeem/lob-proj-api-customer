@@ -5,7 +5,7 @@ import static com.org.lob.support.Constants.REQUEST_PARAM_PAGE_NUMBER;
 import static com.org.lob.support.Constants.REQUEST_PARAM_PAGE_SIZE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -307,6 +307,70 @@ class CustomerApiTest {
 		  .andDo(print())
 		  .andExpect(status().isNotFound())
 	      .andExpect(content().string(""));
+	}
+	
+	@Test
+	void updateIsInternalError() throws Exception {
+		
+		Long id = 1L;
+		CustomerModel customerModel = customerModel(id);
+		when(customerService.getCustomerById(id)).thenThrow(ApplicationException.unknown("Unknown Error"));
+
+		this.mockMvc.perform(put(REQUEST_MAPPING_CUSTOMER + '/' + id)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+		        .content(objectMapper.writeValueAsString(customerModel))
+		  		.accept(MediaType.APPLICATION_JSON))
+		    .andDo(print())
+	        .andExpect(status().isInternalServerError())
+	        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+	        .andExpect(jsonPath("$.statusCode").value(INTERNAL_SERVER_ERROR));
+	}
+
+	@Test
+	void deleteShouldBeOk() throws Exception {
+		Long id = 1L;
+		CustomerModel customerModel = customerModel(id);
+		when(customerService.getCustomerById(id)).thenReturn(Optional.of(customerModel));
+		doNothing().when(customerService).deleteCustomer(id);
+
+		this.mockMvc.perform(delete(REQUEST_MAPPING_CUSTOMER + '/' + id)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+		        .content(objectMapper.writeValueAsString(customerModel))
+		  		.accept(MediaType.APPLICATION_JSON))
+		  .andDo(print())
+		  .andExpect(status().isOk());
+	}
+	
+	@Test
+	void deleteShouldBeNotFound() throws Exception {
+		Long id = 1L;
+		CustomerModel customerModel = customerModel(id);
+		when(customerService.getCustomerById(id)).thenReturn(Optional.empty());
+
+		this.mockMvc.perform(delete(REQUEST_MAPPING_CUSTOMER + '/' + id)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+		        .content(objectMapper.writeValueAsString(customerModel))
+		  		.accept(MediaType.APPLICATION_JSON))
+		  .andDo(print())
+		  .andExpect(status().isNotFound())
+	      .andExpect(content().string(""));
+	}
+	
+	@Test
+	void deleteIsInternalError() throws Exception {
+		
+		Long id = 1L;
+		CustomerModel customerModel = customerModel(id);
+		when(customerService.getCustomerById(id)).thenThrow(ApplicationException.unknown("Unknown Error"));
+
+		this.mockMvc.perform(delete(REQUEST_MAPPING_CUSTOMER + '/' + id)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+		        .content(objectMapper.writeValueAsString(customerModel))
+		  		.accept(MediaType.APPLICATION_JSON))
+		    .andDo(print())
+	        .andExpect(status().isInternalServerError())
+	        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+	        .andExpect(jsonPath("$.statusCode").value(INTERNAL_SERVER_ERROR));
 	}
 
 	private CustomerModel newCustomerModel() {
