@@ -277,6 +277,38 @@ class CustomerApiTest {
 	        	.andExpect(jsonPath("$.errorMessage").value(message));
 	}
 
+	@Test
+	void updateShouldBeOk() throws Exception {
+		Long id = 1L;
+		CustomerModel customerModel = customerModel(id);
+		when(customerService.getCustomerById(id)).thenReturn(Optional.of(customerModel));
+		when(customerService.update(any())).thenReturn(customerModel);
+
+		this.mockMvc.perform(put(REQUEST_MAPPING_CUSTOMER + '/' + id)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+		        .content(objectMapper.writeValueAsString(customerModel))
+		  		.accept(MediaType.APPLICATION_JSON))
+		  .andDo(print())
+		  .andExpect(status().isOk())
+		  .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+		  .andExpect(jsonPath("$.firstName").value(FIRST_NAME_NADEEM));
+	}
+
+	@Test
+	void updateShouldBeNotFound() throws Exception {
+		Long id = 1L;
+		CustomerModel customerModel = customerModel(id);
+		when(customerService.getCustomerById(id)).thenReturn(Optional.empty());
+
+		this.mockMvc.perform(put(REQUEST_MAPPING_CUSTOMER + '/' + id)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+		        .content(objectMapper.writeValueAsString(customerModel))
+		  		.accept(MediaType.APPLICATION_JSON))
+		  .andDo(print())
+		  .andExpect(status().isNotFound())
+	      .andExpect(content().string(""));
+	}
+
 	private CustomerModel newCustomerModel() {
 		CustomerModel customerModel = new CustomerModel();
 		customerModel.setFirstName(FIRST_NAME_NADEEM);
