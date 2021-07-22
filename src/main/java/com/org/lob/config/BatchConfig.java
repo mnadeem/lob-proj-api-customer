@@ -33,9 +33,10 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.org.lob.project.batch.CustomerProcessor;
+import com.org.lob.project.batch.model.ContextInfo;
 import com.org.lob.project.batch.model.CustomerData;
-import com.org.lob.project.repository.entity.Customer;
 import com.org.lob.project.service.CustomerService;
+import com.org.lob.project.service.model.CustomerModel;
 import com.org.lob.support.batch.CopyFileTasklet;
 import com.org.lob.support.batch.FileDeletingTasklet;
 import com.org.lob.support.batch.LoggingJobExecutionListener;
@@ -100,10 +101,10 @@ public class BatchConfig {
     }
 
 	@Bean(name = "readWriteStep")
-	Step readWriteStep(@Value("${app.batch_process.read_write.step}") String stepName, StaxEventItemReader<CustomerData> reader, CustomerProcessor processor, ItemWriterAdapter<Customer> writer, StepExecutionListener stepExecutionListener) {
+	Step readWriteStep(@Value("${app.batch_process.read_write.step}") String stepName, StaxEventItemReader<CustomerData> reader, CustomerProcessor processor, ItemWriterAdapter<CustomerModel> writer, StepExecutionListener stepExecutionListener) {
 		return stepBuilderFactory.get(stepName)
 				.listener(stepExecutionListener)
-				.<CustomerData, Customer>chunk(10)
+				.<CustomerData, CustomerModel>chunk(10)
 					.reader(reader)
 					.processor(processor)
 					.faultTolerant()
@@ -114,9 +115,10 @@ public class BatchConfig {
 
 	@Bean
 	@StepScope
-	StaxEventItemReader<CustomerData> customerDataReader(@Value("#{jobExecutionContext['fileName']}") String file) throws MalformedURLException {
+	StaxEventItemReader<CustomerData> customerDataReader(@Value("#{jobExecutionContext['fileName']}") String file, @Value("#{jobExecutionContext['key']}") ContextInfo contextInfo) throws MalformedURLException {
 
 		LOGGER.info("customerDataReader:fileName: {}", file);
+		LOGGER.info("customerDataReader:contextInfo: {}", contextInfo);
 
 		StaxEventItemReader<CustomerData> reader = new StaxEventItemReader<>();
 		reader.setResource(new UrlResource(file));
@@ -137,8 +139,8 @@ public class BatchConfig {
 	}
 
 	@Bean
-	ItemWriterAdapter<Customer> customerItemWriter(CustomerService customerService) {
-		ItemWriterAdapter<Customer> writer = new ItemWriterAdapter<>();
+	ItemWriterAdapter<CustomerModel> customerItemWriter(CustomerService customerService) {
+		ItemWriterAdapter<CustomerModel> writer = new ItemWriterAdapter<>();
 		writer.setTargetObject(customerService);
 		writer.setTargetMethod(BATCH_JOB_TARGET_METHOD);
 		return writer;
@@ -146,8 +148,11 @@ public class BatchConfig {
 
 	@Bean(name = "deleteStep")
 	@JobScope
-    public Step deleteStep(@Value("${app.batch_process.delete_file.step}") String stepName, @Value("#{jobExecutionContext['fileName']}") String file) throws MalformedURLException {
-        FileDeletingTasklet task = new FileDeletingTasklet();
+    public Step deleteStep(@Value("${app.batch_process.delete_file.step}") String stepName, @Value("#{jobExecutionContext['fileName']}") String file, @Value("#{jobExecutionContext['key']}") ContextInfo contextInfo) throws MalformedURLException {
+        
+		LOGGER.info("deleteStep:contextInfo: {}", contextInfo);
+		
+		FileDeletingTasklet task = new FileDeletingTasklet();
         task.setResource(new UrlResource(file));
         return stepBuilderFactory.get(stepName)
                 .tasklet(task)

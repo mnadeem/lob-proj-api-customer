@@ -10,6 +10,8 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
+import com.org.lob.project.batch.model.ContextInfo;
+
 public class CopyFileTasklet implements Tasklet, InitializingBean  {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CopyFileTasklet.class);
@@ -24,7 +26,9 @@ public class CopyFileTasklet implements Tasklet, InitializingBean  {
 		String localFilePath = localFileBasePath + fileName;
 		copyFile(fileName, localFilePath);
 		LOGGER.trace("File copied to {}", localFilePath);
-		updateStepExecContext(chunkContext, localFilePath);
+		
+		ExecutionContext executionContext =  getExecutionContext(chunkContext);
+		updateStepExecContext(executionContext, localFilePath);
 		
 		return RepeatStatus.FINISHED;
 	}
@@ -33,9 +37,15 @@ public class CopyFileTasklet implements Tasklet, InitializingBean  {
 		// TODO Auto-generated method stub		
 	}
 
-	private void updateStepExecContext(ChunkContext chunkContext, String localFilePath) {
-		ExecutionContext executionContext =  chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
+	private void updateStepExecContext(ExecutionContext executionContext, String localFilePath) {
 		executionContext.putString(localFilePathKey, localFilePath);
+		ContextInfo value = new ContextInfo();
+		value.setData(String.valueOf(System.currentTimeMillis()));
+		executionContext.put("key", value);
+	}
+
+	private ExecutionContext getExecutionContext(ChunkContext chunkContext) {
+		return chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
 	}
 
 	@Override

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<customers>
+    <customer>
+        <firstName>firstname_batch</firstName>
+        <lastName>lastName_batch</lastName>
+        <emailAddress>email_batch@org.com</emailAddress>
+        <addresses>
+            <address>
+                <zip-code>ZC</zip-code>
+                <state-code>SC</state-code>
+                <country>copuntyhr</country>
+                <street-address>Str Adr</street-address>
+                <city>city</city>
+            </address>
+            <address>
+                <zip-code>ZC1</zip-code>
+                <state-code>SC1</state-code>
+                <country>copuntyhr1</country>
+                <street-address>Str Adr1</street-address>
+                <city>city1</city>
+            </address>
+        </addresses>
+    </customer>
+ 
+</customers>
