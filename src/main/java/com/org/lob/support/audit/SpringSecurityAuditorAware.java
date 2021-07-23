@@ -15,13 +15,14 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
 
-    	Optional<String> secured =  Optional.ofNullable(SecurityContextHolder.getContext())
-                 .map(SecurityContext::getAuthentication)
-                 .filter(Authentication::isAuthenticated)
-                 .map(Authentication::getPrincipal)
-                 .map(User.class::cast)
-                 .map(User::getUsername);
+		/*
+		 * Optional<String> secured =
+		 * Optional.ofNullable(SecurityContextHolder.getContext())
+		 * .map(SecurityContext::getAuthentication)
+		 * .filter(Authentication::isAuthenticated) .map(Authentication::getPrincipal)
+		 * .map(User.class::cast) .map(User::getUsername);
+		 */
 
-    	return !secured.isPresent() ? Optional.of(SYSTEM_USER_DEFAULT) : secured;
+    	return Optional.of(SYSTEM_USER_DEFAULT);
     }
 }
