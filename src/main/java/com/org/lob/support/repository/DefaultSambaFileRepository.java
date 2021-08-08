@@ -63,8 +63,12 @@ public class DefaultSambaFileRepository implements SambaFileRepository {
 	}
 
 	private File openSambaFileForRead(DiskShare share, String sourceSambaFilePath) {
-		return share.openFile(sourceSambaFilePath, EnumSet.of(AccessMask.GENERIC_READ), null, SMB2ShareAccess.ALL,
-				SMB2CreateDisposition.FILE_OPEN, null);
+		return share.openFile(sourceSambaFilePath,
+				EnumSet.of(AccessMask.GENERIC_READ),
+				null,
+				SMB2ShareAccess.ALL,
+				SMB2CreateDisposition.FILE_OPEN,
+				null);
 	}
 
 	@Override
@@ -72,8 +76,7 @@ public class DefaultSambaFileRepository implements SambaFileRepository {
 
 		createFolders(share, targetSambaFilePath);
 
-		try (File targetSambaFile = openSambaFileForWrite(share, targetSambaFilePath);
-				OutputStream targetOutputStream = targetSambaFile.getOutputStream()) {
+		try (File targetSambaFile = openSambaFileForWrite(share, targetSambaFilePath); OutputStream targetOutputStream = targetSambaFile.getOutputStream()) {
 			Files.copy(sourceLocalPath, targetOutputStream);
 		}
 	}
@@ -94,8 +97,11 @@ public class DefaultSambaFileRepository implements SambaFileRepository {
 	}
 
 	private File openSambaFileForWrite(DiskShare share, String targetSambaFilePath) {
-		return share.openFile(targetSambaFilePath, EnumSet.of(AccessMask.GENERIC_ALL),
-				EnumSet.of(FileAttributes.FILE_ATTRIBUTE_NORMAL), SMB2ShareAccess.ALL,
-				SMB2CreateDisposition.FILE_OVERWRITE_IF, EnumSet.of(SMB2CreateOptions.FILE_RANDOM_ACCESS));
+		return share.openFile(targetSambaFilePath,
+				EnumSet.of(AccessMask.GENERIC_ALL),
+				EnumSet.of(FileAttributes.FILE_ATTRIBUTE_NORMAL),
+				SMB2ShareAccess.ALL,
+				SMB2CreateDisposition.FILE_OVERWRITE_IF,
+				EnumSet.of(SMB2CreateOptions.FILE_RANDOM_ACCESS));
 	}
 }
