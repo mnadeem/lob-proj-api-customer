@@ -19,6 +19,7 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<smbj.version>0.11.1</smbj.version>
+		<bcprov-jdk15on.version>1.60</bcprov-jdk15on.version>
 		<jjwt.version>0.9.1</jjwt.version>
 		<mapstruct.version>1.4.2.Final</mapstruct.version>
 	</properties>
@@ -62,6 +63,11 @@
 		  <artifactId>smbj</artifactId>
 		  <version>${smbj.version}</version>
 		</dependency>
+		<dependency>
+	      <groupId>org.bouncycastle</groupId>
+	      <artifactId>bcprov-jdk15on</artifactId>
+	      <version>${bcprov-jdk15on.version}</version>
+	    </dependency>
 		<dependency>
 		    <groupId>io.jsonwebtoken</groupId>
 		    <artifactId>jjwt</artifactId>
