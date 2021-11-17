@@ -11,7 +11,7 @@ import com.org.lob.project.service.model.CustomerSearchRequest;
 
 public interface CustomerService {
 
-	Optional<CustomerModel> getCustomerById(Long customerId);
+	CustomerModel getCustomerById(Long customerId);
 
 	List<CustomerModel> findAllById(Iterable<Long> ids);
 

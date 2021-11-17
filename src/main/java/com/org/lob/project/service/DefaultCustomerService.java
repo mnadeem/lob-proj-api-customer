@@ -35,12 +35,21 @@ public class DefaultCustomerService implements CustomerService {
 		this.customerMapper = customerMapper;
 		this.addressMapper = addressMapper;
 	}
+	
+	/**
 
 	@Override
 	public Optional<CustomerModel> getCustomerById(Long customerId) {
 		LOGGER.debug("Fetching customer by id: {}", customerId);
 		Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
 		return optionalCustomer.isPresent() ? Optional.of(customerMapper.toCustomerModel(optionalCustomer.get())) : Optional.empty();
+	} **/
+
+	@Override
+	public CustomerModel getCustomerById(Long customerId) {
+		LOGGER.debug("Fetching customer by id: {}", customerId);
+		Customer customer = getOrThrow(customerId);
+		return customerMapper.toCustomerModel(customer);
 	}
 
 	@Override
@@ -57,15 +66,13 @@ public class DefaultCustomerService implements CustomerService {
 	@Override
 	public CustomerModel update(CustomerModel customerModel) {
 		LOGGER.debug("Updating a customer with id: {}", customerModel.getId());
-		Optional<Customer> optionalCustomer = customerRepository.findById(customerModel.getId());
-		if (!optionalCustomer.isPresent()) {
-			LOGGER.error("Unable to update customer by id {}", customerModel.getId());
-			throw ApplicationException.noRecordFound("Customer does not exists " + customerModel.getId());
-		}
-		Customer existingCustomer = optionalCustomer.get();
+
+		Customer existingCustomer = getOrThrow(customerModel.getId());
+
 		existingCustomer.setAddresses(addressMapper.toAddresses(customerModel.getAddresses()));
 		existingCustomer.setFirstName(customerModel.getFirstName());
 		existingCustomer.setLastName(customerModel.getLastName());
+
 		return customerMapper.toCustomerModel(customerRepository.save(existingCustomer));
 	}
 	
@@ -88,6 +95,7 @@ public class DefaultCustomerService implements CustomerService {
 
 	@Override
 	public void deleteCustomer(Long customerId) {
+
 		try {
 			customerRepository.deleteById(customerId);
 		} catch (EmptyResultDataAccessException e) {
@@ -104,5 +112,16 @@ public class DefaultCustomerService implements CustomerService {
 	@Override
 	public List<CustomerModel> findAllById(Iterable<Long> ids) {
 		return customerMapper.toCustomerModels(customerRepository.findAllById(ids));
+	}
+
+	private Customer getOrThrow(Long customerId) {
+		Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+
+		if (!optionalCustomer.isPresent()) {
+			LOGGER.error("Customer not found with id {} ", customerId);
+			throw ApplicationException.noRecordFound("Customer not found for Id : " + customerId);
+		}
+
+		return optionalCustomer.get();
 	}
 }

@@ -1,18 +1,19 @@
 package com.org.lob.project.api.model;
 
 public class ErrorMessage {
-    private int statusCode;
-    private String errorMessage;
 
-	public ErrorMessage(int statusCode, String errorMessage) {
+    private String statusCode;
+    private String message;
+
+	public ErrorMessage(String statusCode, String errorMessage) {
 		this.statusCode = statusCode;
-		this.errorMessage = errorMessage;
+		this.message = errorMessage;
 	}
-	public int getStatusCode() {
+	public String getStatusCode() {
 		return statusCode;
 	}
 
 	public String getErrorMessage() {
-		return errorMessage;
+		return message;
 	}
 }

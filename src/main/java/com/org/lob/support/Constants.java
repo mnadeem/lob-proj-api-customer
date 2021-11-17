@@ -16,8 +16,12 @@ public final class Constants {
 	public static final String PASSWORD_FAKE = "faKE";
 
 	public static final String PATH_VARIABLE_ID = "id";
+
 	public static final String REQUEST_PARAM_PAGE_NUMBER = "pageNumber";
 	public static final String REQUEST_PARAM_PAGE_SIZE = "pageSize";
+	public static final String REQUEST_PARAM_SORT_BY = "sortBy";
+	public static final String REQUEST_PARAM_SORT_DIRECTION = "sortDirection";
+	
 	public static final String REQUEST_PARAM_FIRST_NAME = "firstName";
 	public static final String REQUEST_PARAM_LAST_NAME = "lastName";
 	public static final String REQUEST_PARAM_EMAIL = "email";
